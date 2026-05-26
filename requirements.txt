@@ -1,6 +1,7 @@
 streamlit
 google-genai
 scikit-fuzzy
+scipy
 pandas
 numpy
 matplotlib
