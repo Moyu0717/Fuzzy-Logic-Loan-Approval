@@ -14,7 +14,7 @@ from google import genai
 from google.genai import types
 
 st.set_page_config(page_title="Loan Approval Intelligence",
-                   page_icon="●", layout="wide", initial_sidebar_state="expanded")
+                   page_icon="●", layout="wide", initial_sidebar_state="collapsed")
 
 PAGE="#F4F6F8"; SIDEBAR="#102A22"; CARD="#FFFFFF"; BORDER="#E3E8EE"
 INK="#16242B"; MUTED="#67767F"; ACCENT="#137A54"; ACC_SOFT="#E7F3EE"
@@ -29,23 +29,24 @@ html, body, [class*="css"] {{ font-family:{FONT}; color:{INK}; font-size:15px; }
 .main .block-container {{ padding-top:2rem; padding-bottom:3rem; max-width:1180px; }}
 #MainMenu, header, footer {{ visibility:hidden; }}
 
-/* sidebar */
-[data-testid="stSidebar"] {{ background:{SIDEBAR}; }}
-[data-testid="stSidebar"] * {{ color:#D7E4DD; }}
-.sb-brand {{ display:flex; align-items:center; gap:11px; padding:6px 4px 16px; }}
-.sb-logo {{ width:38px; height:38px; border-radius:10px; background:{ACCENT};
-           display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:17px; }}
-.sb-brand .t {{ font-size:15px; font-weight:700; color:#fff; line-height:1.1; }}
-.sb-brand .s {{ font-size:10px; color:#7FA295; letter-spacing:1px; text-transform:uppercase; }}
-.sb-section {{ font-size:10.5px; color:#6E8C80; letter-spacing:1.3px; text-transform:uppercase;
-              font-weight:700; margin:8px 4px 4px; }}
-[data-testid="stSidebar"] [role="radiogroup"] {{ gap:3px; }}
-[data-testid="stSidebar"] [role="radiogroup"] label {{ border-radius:10px; padding:10px 13px; margin:0; cursor:pointer; }}
-[data-testid="stSidebar"] [role="radiogroup"] label:hover {{ background:rgba(255,255,255,.06); }}
-[data-testid="stSidebar"] [role="radiogroup"] label p {{ font-size:14.5px; font-weight:600; color:#CFE0D8; }}
-[data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked) {{ background:{ACCENT}; }}
-[data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked) p {{ color:#fff; }}
-[data-testid="stSidebar"] [role="radiogroup"] [data-baseweb="radio"] div:first-child {{ display:none; }}
+/* top brand bar */
+.brandbar {{ display:flex; align-items:center; gap:12px; margin-bottom:14px; }}
+.sb-logo {{ width:40px; height:40px; border-radius:11px; background:{ACCENT};
+           display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:18px; }}
+.brandbar .t {{ font-size:18px; font-weight:800; color:{INK}; line-height:1.1; letter-spacing:-.3px; }}
+.brandbar .s {{ font-size:11px; color:{MUTED}; letter-spacing:1px; text-transform:uppercase; font-weight:600; }}
+
+/* TOP horizontal nav pills (always visible, never collapses) */
+[role="radiogroup"] {{ flex-direction:row !important; gap:8px !important; flex-wrap:wrap;
+    background:#FFFFFF; border:1px solid {BORDER}; border-radius:14px; padding:6px;
+    box-shadow:0 1px 2px rgba(16,42,34,.04); margin-bottom:22px; }}
+[role="radiogroup"] label {{ border-radius:10px; padding:9px 18px; margin:0 !important; cursor:pointer;
+    transition:background .12s ease; }}
+[role="radiogroup"] label:hover {{ background:#F2F6F4; }}
+[role="radiogroup"] label p {{ font-size:14px; font-weight:600; color:{MUTED}; }}
+[role="radiogroup"] label:has(input:checked) {{ background:{ACCENT}; }}
+[role="radiogroup"] label:has(input:checked) p {{ color:#fff; }}
+[role="radiogroup"] [data-baseweb="radio"] div:first-child {{ display:none; }}
 
 /* page header */
 .eyebrow {{ font-size:11.5px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase; color:{ACCENT}; margin-bottom:4px; }}
@@ -322,14 +323,13 @@ def mf_figure():
 PCFG = {"displayModeBar": False, "responsive": True}
 
 
-# ---------------- sidebar ----------------
-with st.sidebar:
-    st.markdown('<div class="sb-brand"><div class="sb-logo">L</div>'
-                '<div><div class="t">Loan Approval</div><div class="s">Fuzzy · GA · Agent</div></div></div>',
-                unsafe_allow_html=True)
-    st.markdown('<div class="sb-section">Workspace</div>', unsafe_allow_html=True)
-    page = st.radio("nav", ["Assess", "AI Agent", "GA Results", "Membership Functions"],
-                    label_visibility="collapsed")
+# ---------------- top nav (always visible) ----------------
+st.markdown('<div class="brandbar"><div class="sb-logo">L</div>'
+            '<div><div class="t">Loan Approval Intelligence</div>'
+            '<div class="s">Fuzzy Logic · Genetic Algorithm · AI Agent</div></div></div>',
+            unsafe_allow_html=True)
+page = st.radio("nav", ["Assess", "AI Agent", "GA Results", "Membership Functions"],
+                horizontal=True, label_visibility="collapsed")
 
 def header(eyebrow, title, desc):
     st.markdown(f'<div class="eyebrow">{eyebrow}</div><div class="h-title">{title}</div>'
