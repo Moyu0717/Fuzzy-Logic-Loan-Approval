@@ -15,7 +15,7 @@ from google import genai
 from google.genai import types
 
 st.set_page_config(page_title="Loan Approval Intelligence",
-                   page_icon="●", layout="wide", initial_sidebar_state="collapsed")
+                   page_icon="●", layout="wide", initial_sidebar_state="expanded")
 
 PAGE="#F4F6F8"; CARD="#FFFFFF"; BORDER="#E3E8EE"
 INK="#16242B"; MUTED="#67767F"; ACCENT="#137A54"; ACC_SOFT="#E7F3EE"
@@ -27,14 +27,23 @@ st.markdown(f"""
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 .stApp {{ background:{PAGE}; }}
 html, body, [class*="css"] {{ font-family:{FONT}; color:{INK}; font-size:15px; }}
-/* centre the page */
-.main .block-container {{ padding-top:.35rem; padding-bottom:2rem; max-width:1240px;
+/* compact page */
+.main .block-container {{ padding-top:.15rem; padding-bottom:1.2rem; max-width:1320px;
     margin-left:auto !important; margin-right:auto !important; }}
-#MainMenu, header, footer {{ visibility:hidden; }}
-[data-testid="stSidebar"] {{ display:none; }}
+#MainMenu, footer {{ visibility:hidden; }}
+[data-testid="stHeader"] {{ display:none; }}
+[data-testid="stToolbar"] {{ display:none; }}
+[data-testid="stSidebar"] {{ background:#FFFFFF; border-right:1px solid #E3E8EE; }}
+[data-testid="stSidebar"] > div:first-child {{ padding-top:1rem; }}
+[data-testid="stSidebar"] .stRadio > label {{ display:none; }}
+[data-testid="stSidebar"] [role="radiogroup"] {{ gap:7px; }}
+[data-testid="stSidebar"] [role="radio"] {{ border-radius:12px; padding:10px 12px; border:1px solid transparent; }}
+[data-testid="stSidebar"] [role="radio"][aria-checked="true"] {{ background:#E7F3EE; border-color:#BFE3D2; }}
+[data-testid="stSidebar"] [role="radio"][aria-checked="true"] p {{ color:#137A54 !important; font-weight:800 !important; }}
+[data-testid="stSidebar"] [role="radio"] p {{ font-weight:650 !important; }}
 
 /* brand bar */
-.brandbar {{ display:flex; align-items:center; gap:12px; margin-bottom:10px; }}
+.brandbar {{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }}
 .blogo {{ width:40px; height:40px; border-radius:11px; background:{ACCENT};
          display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:18px; }}
 .brandbar .t {{ font-size:18px; font-weight:800; color:{INK}; line-height:1.1; letter-spacing:-.3px; }}
@@ -53,8 +62,8 @@ html, body, [class*="css"] {{ font-family:{FONT}; color:{INK}; font-size:15px; }
 
 /* page header */
 .eyebrow {{ font-size:11.5px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase; color:{ACCENT}; margin-bottom:4px; }}
-.h-title {{ font-size:26px; font-weight:800; letter-spacing:-.5px; color:{INK}; margin:0 0 6px; }}
-.h-desc {{ font-size:14px; color:{MUTED}; margin-bottom:14px; max-width:820px; line-height:1.55; }}
+.h-title {{ font-size:24px; font-weight:800; letter-spacing:-.5px; color:{INK}; margin:0 0 4px; }}
+.h-desc {{ font-size:13.5px; color:{MUTED}; margin-bottom:8px; max-width:900px; line-height:1.45; }}
 
 /* native bordered container -> card */
 [data-testid="stVerticalBlockBorderWrapper"] {{ background:{CARD}; border:1px solid {BORDER} !important;
@@ -112,23 +121,23 @@ div[data-testid="column"] .stButton > button:hover {{ border-color:{ACCENT}; col
 .kv {{ font-size:14px; line-height:1.95; }}
 
 /* compact hero + agent timeline */
-.hero {{ background:{CARD}; border:1px solid {BORDER}; border-radius:18px; padding:16px 18px; margin-bottom:14px;
+.hero {{ background:{CARD}; border:1px solid {BORDER}; border-radius:16px; padding:12px 16px; margin-bottom:10px;
         box-shadow:0 1px 3px rgba(16,42,34,.05); }}
-.agent-card {{ background:{CARD}; border:1px solid {BORDER}; border-radius:18px; padding:18px 22px; margin:8px 0 16px;
+.agent-card {{ background:{CARD}; border:1px solid {BORDER}; border-radius:16px; padding:12px 16px; margin:6px 0 12px;
         box-shadow:0 1px 3px rgba(16,42,34,.05); }}
-.agent-head {{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px; }}
+.agent-head {{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:9px; }}
 .agent-title {{ font-size:17px; font-weight:800; color:{INK}; }}
 .agent-status {{ font-size:12px; color:{ACCENT}; font-weight:700; background:{ACC_SOFT}; border:1px solid #BFE3D2; padding:6px 10px; border-radius:999px; }}
 .timeline {{ position:relative; display:grid; grid-template-columns:repeat(6,1fr); gap:14px; align-items:start; }}
-.timeline:before {{ content:""; position:absolute; left:6%; right:6%; top:25px; height:3px; background:#DCEAE3; border-radius:99px; }}
-.timeline:after {{ content:""; position:absolute; left:6%; top:25px; height:3px; width:var(--fill,0%); background:{ACCENT}; border-radius:99px; transition:width .45s ease; }}
+.timeline:before {{ content:""; position:absolute; left:6%; right:6%; top:20px; height:3px; background:#DCEAE3; border-radius:99px; }}
+.timeline:after {{ content:""; position:absolute; left:6%; top:20px; height:3px; width:var(--fill,0%); background:{ACCENT}; border-radius:99px; transition:width .45s ease; }}
 .titem {{ position:relative; z-index:1; text-align:center; min-width:0; }}
-.tcircle {{ width:52px; height:52px; border-radius:999px; margin:0 auto 8px; display:flex; align-items:center; justify-content:center;
+.tcircle {{ width:42px; height:42px; border-radius:999px; margin:0 auto 6px; display:flex; align-items:center; justify-content:center;
           background:#F7FAF8; border:2px solid #DCEAE3; color:{MUTED}; font-weight:800; box-shadow:0 0 0 6px {CARD}; }}
 .titem.done .tcircle {{ background:{ACCENT}; border-color:{ACCENT}; color:white; }}
 .titem.active .tcircle {{ background:{ACCENT}; border-color:{ACCENT}; color:white; animation:pulse 1.1s infinite; }}
 .tlabel {{ font-size:13px; font-weight:800; color:{INK}; white-space:nowrap; }}
-.tdesc {{ font-size:11.5px; color:{MUTED}; line-height:1.25; margin-top:3px; }}
+.tdesc {{ font-size:11px; color:{MUTED}; line-height:1.2; margin-top:2px; }}
 @keyframes pulse {{ 0% {{ box-shadow:0 0 0 6px {CARD},0 0 0 8px rgba(19,122,84,.20); }} 70% {{ box-shadow:0 0 0 6px {CARD},0 0 0 17px rgba(19,122,84,0); }} 100% {{ box-shadow:0 0 0 6px {CARD},0 0 0 8px rgba(19,122,84,0); }} }}
 .info-grid {{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:10px 0 12px; }}
 .infobox {{ background:#FBFCFD; border:1px solid {BORDER}; border-radius:12px; padding:10px 12px; }}
@@ -301,7 +310,7 @@ def risk_gauge(score, decision):
                    dict(range=[40, 70], color="rgba(201,138,30,.12)"),
                    dict(range=[70, 100], color="rgba(209,67,67,.12)")],
             threshold=dict(line=dict(color=col, width=3), thickness=0.8, value=score))))
-    return _light(fig, h=210)
+    return _light(fig, h=185)
 
 def convergence_figure():
     fit = fe.ga_result["fit_history"]; x = list(range(len(fit)))
@@ -377,21 +386,22 @@ def render_agent_process(active=0, mode="idle"):
 # ================================================================
 # LAYOUT
 # ================================================================
-st.markdown('<div class="brandbar"><div class="blogo">L</div>'
-            '<div><div class="t">Loan Approval Intelligence</div>'
-            '<div class="s">Fuzzy Logic · Genetic Algorithm · AI Agent</div></div></div>',
-            unsafe_allow_html=True)
+with st.sidebar:
+    st.markdown('<div class="brandbar"><div class="blogo">L</div>'
+                '<div><div class="t">Loan Approval Intelligence</div>'
+                '<div class="s">Fuzzy Logic · GA · AI Agent</div></div></div>',
+                unsafe_allow_html=True)
+    page = st.radio("Navigation", ["Assess", "GA Results", "Membership Functions"], label_visibility="collapsed")
+    st.markdown('<div class="cs" style="margin-top:14px;line-height:1.45;">GA-optimised fuzzy risk engine with integrated agentic evaluation.</div>', unsafe_allow_html=True)
 
 def header(eyebrow, title, desc):
     st.markdown(f'<div class="eyebrow">{eyebrow}</div><div class="h-title">{title}</div>'
                 f'<div class="h-desc">{desc}</div>', unsafe_allow_html=True)
 
-tab_assess, tab_ga, tab_mf = st.tabs(
-    ["Assess", "GA Results", "Membership Functions"])
-
+st.markdown('<div style="height:2px"></div>', unsafe_allow_html=True)
 
 # ---------------- ASSESS ----------------
-with tab_assess:
+if page == "Assess":
     st.markdown('<div class="hero"><div class="eyebrow">Risk Assessment</div><div class="h-title">Evaluate Applicant</div>'
                 '<div class="h-desc">The AI agent is now integrated into the main evaluation flow: it observes inputs, checks CTOS evidence, calls the GA-optimised fuzzy engine, explains the fuzzy membership degrees, and returns the final decision.</div></div>',
                 unsafe_allow_html=True)
@@ -469,14 +479,14 @@ with tab_assess:
                     suggestion = "Applicant profile is acceptable. Maintain credit quality and repayment discipline."
                 st.markdown(f'<div class="callout"><b>Action advice:</b> {suggestion}</div>', unsafe_allow_html=True)
             else:
-                st.markdown('<div style="text-align:center;color:#8A99A3;padding:58px 10px;font-size:14px;">'
+                st.markdown('<div style="text-align:center;color:#8A99A3;padding:32px 10px;font-size:14px;">'
                             'Waiting for applicant input.<br>Click '
                             '<b style="color:#137A54">Evaluate Applicant</b> to run the integrated AI agent process.</div>',
                             unsafe_allow_html=True)
 
 
 # ---------------- GA RESULTS ----------------
-with tab_ga:
+if page == "GA Results":
     header("Data-Driven Optimisation", "Genetic Algorithm",
            "The GA tunes the fuzzy membership-function breakpoints by minimising the error between "
            "the model's risk output and the real loan-status labels.")
@@ -519,7 +529,7 @@ with tab_ga:
 
 
 # ---------------- MEMBERSHIP FUNCTIONS ----------------
-with tab_mf:
+if page == "Membership Functions":
     header("Fuzzy Sets", "Membership Functions",
            "The fuzzy sets the inference engine uses. Three variables are tuned by the GA; credit and "
            "default are fixed by standard. Hover any curve to read its membership value.")
