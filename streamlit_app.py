@@ -1,6 +1,6 @@
 # ================================================================
 # Loan Approval Intelligence — Streamlit + Gemini AI Agent
-# Light SaaS UI · sidebar nav · native bordered containers
+# Light SaaS UI · st.tabs navigation · native bordered containers
 # Fuzzy engine (FIS + GA) lives in fuzzy_engine.py — unchanged.
 # ================================================================
 
@@ -16,7 +16,7 @@ from google.genai import types
 st.set_page_config(page_title="Loan Approval Intelligence",
                    page_icon="●", layout="wide", initial_sidebar_state="collapsed")
 
-PAGE="#F4F6F8"; SIDEBAR="#102A22"; CARD="#FFFFFF"; BORDER="#E3E8EE"
+PAGE="#F4F6F8"; CARD="#FFFFFF"; BORDER="#E3E8EE"
 INK="#16242B"; MUTED="#67767F"; ACCENT="#137A54"; ACC_SOFT="#E7F3EE"
 GREEN="#15935F"; AMBER="#C98A1E"; RED="#D14343"
 FONT="Inter, -apple-system, 'Segoe UI', system-ui, sans-serif"
@@ -26,62 +26,64 @@ st.markdown(f"""
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 .stApp {{ background:{PAGE}; }}
 html, body, [class*="css"] {{ font-family:{FONT}; color:{INK}; font-size:15px; }}
-.main .block-container {{ padding-top:2rem; padding-bottom:3rem; max-width:1180px; }}
+/* centre the page */
+.main .block-container {{ padding-top:2rem; padding-bottom:3rem; max-width:1140px;
+    margin-left:auto !important; margin-right:auto !important; }}
 #MainMenu, header, footer {{ visibility:hidden; }}
+[data-testid="stSidebar"] {{ display:none; }}
 
-/* top brand bar */
-.brandbar {{ display:flex; align-items:center; gap:12px; margin-bottom:14px; }}
-.sb-logo {{ width:40px; height:40px; border-radius:11px; background:{ACCENT};
-           display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:18px; }}
+/* brand bar */
+.brandbar {{ display:flex; align-items:center; gap:12px; margin-bottom:16px; }}
+.blogo {{ width:40px; height:40px; border-radius:11px; background:{ACCENT};
+         display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:18px; }}
 .brandbar .t {{ font-size:18px; font-weight:800; color:{INK}; line-height:1.1; letter-spacing:-.3px; }}
 .brandbar .s {{ font-size:11px; color:{MUTED}; letter-spacing:1px; text-transform:uppercase; font-weight:600; }}
 
-/* TOP horizontal nav pills (always visible, never collapses) */
-[role="radiogroup"] {{ flex-direction:row !important; gap:8px !important; flex-wrap:wrap;
-    background:#FFFFFF; border:1px solid {BORDER}; border-radius:14px; padding:6px;
-    box-shadow:0 1px 2px rgba(16,42,34,.04); margin-bottom:22px; }}
-[role="radiogroup"] label {{ border-radius:10px; padding:9px 18px; margin:0 !important; cursor:pointer;
-    transition:background .12s ease; }}
-[role="radiogroup"] label:hover {{ background:#F2F6F4; }}
-[role="radiogroup"] label p {{ font-size:14px; font-weight:600; color:{MUTED}; }}
-[role="radiogroup"] label:has(input:checked) {{ background:{ACCENT}; }}
-[role="radiogroup"] label:has(input:checked) p {{ color:#fff; }}
-[role="radiogroup"] [data-baseweb="radio"] div:first-child {{ display:none; }}
+/* tabs -> clean segmented nav */
+.stTabs [data-baseweb="tab-list"] {{ gap:6px; background:{CARD}; border:1px solid {BORDER};
+    border-radius:14px; padding:6px; box-shadow:0 1px 2px rgba(16,42,34,.04); }}
+.stTabs [data-baseweb="tab-list"] button {{ height:40px; border-radius:10px; padding:0 20px;
+    background:transparent; }}
+.stTabs [data-baseweb="tab-list"] button p {{ font-size:14px; font-weight:600; color:{MUTED}; }}
+.stTabs [aria-selected="true"] {{ background:{ACCENT} !important; }}
+.stTabs [aria-selected="true"] p {{ color:#fff !important; }}
+.stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] {{ display:none; }}
+.stTabs [data-baseweb="tab-panel"] {{ padding-top:22px; }}
 
 /* page header */
 .eyebrow {{ font-size:11.5px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase; color:{ACCENT}; margin-bottom:4px; }}
-.h-title {{ font-size:30px; font-weight:800; letter-spacing:-.6px; color:{INK}; margin:0 0 6px; }}
-.h-desc {{ font-size:15px; color:{MUTED}; margin-bottom:20px; max-width:720px; line-height:1.55; }}
+.h-title {{ font-size:28px; font-weight:800; letter-spacing:-.5px; color:{INK}; margin:0 0 6px; }}
+.h-desc {{ font-size:14.5px; color:{MUTED}; margin-bottom:18px; max-width:720px; line-height:1.55; }}
 
-/* native bordered container -> our card look */
+/* native bordered container -> card */
 [data-testid="stVerticalBlockBorderWrapper"] {{ background:{CARD}; border:1px solid {BORDER} !important;
     border-radius:16px; box-shadow:0 1px 2px rgba(16,42,34,.04); }}
-.ch {{ font-size:17px; font-weight:700; color:{INK}; margin:2px 0 2px; }}
-.cs {{ font-size:13.5px; color:{MUTED}; margin-bottom:14px; }}
+.ch {{ font-size:16px; font-weight:700; color:{INK}; margin:2px 0 2px; }}
+.cs {{ font-size:13px; color:{MUTED}; margin-bottom:14px; }}
 
-/* metric cards (pure html) */
+/* metric cards */
 .mwrap {{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:16px; }}
 .mcard {{ flex:1; min-width:160px; background:{CARD}; border:1px solid {BORDER};
          border-radius:14px; padding:16px 18px; box-shadow:0 1px 2px rgba(16,42,34,.04); }}
 .mcard .k {{ font-size:11px; color:{MUTED}; text-transform:uppercase; letter-spacing:.9px; font-weight:700; }}
-.mcard .v {{ font-size:26px; font-weight:800; color:{INK}; margin-top:6px; letter-spacing:-.5px; }}
+.mcard .v {{ font-size:25px; font-weight:800; color:{INK}; margin-top:6px; letter-spacing:-.5px; }}
 .mcard .v .ac {{ color:{ACCENT}; }}
 .mcard .d {{ font-size:12px; color:{MUTED}; margin-top:3px; }}
 
-/* form controls */
+/* form */
 [data-testid="stWidgetLabel"] p {{ color:{INK} !important; font-weight:600 !important; font-size:13px !important; }}
 .stNumberInput input, .stSelectbox div[data-baseweb="select"] > div, .stTextInput input {{
     background:#FBFCFD !important; color:{INK} !important; border:1px solid {BORDER} !important;
     border-radius:10px !important; font-size:14.5px !important; }}
 .stNumberInput button {{ background:#FBFCFD !important; border:1px solid {BORDER} !important; color:{INK} !important; }}
-.stButton > button {{ background:{ACCENT}; color:#fff; border:none; border-radius:11px;
-    font-weight:700; padding:12px 0; font-size:15px; }}
-.stButton > button:hover {{ filter:brightness(1.08); }}
+.stButton > button, .stFormSubmitButton > button {{ background:{ACCENT}; color:#fff; border:none;
+    border-radius:11px; font-weight:700; padding:11px 0; font-size:15px; }}
+.stButton > button:hover, .stFormSubmitButton > button:hover {{ filter:brightness(1.08); }}
 div[data-testid="column"] .stButton > button {{ background:#FFFFFF; color:{INK};
     border:1px solid {BORDER}; font-weight:600; font-size:13px; padding:10px 12px; }}
 div[data-testid="column"] .stButton > button:hover {{ border-color:{ACCENT}; color:{ACCENT}; filter:none; }}
 
-/* decision badge */
+/* badge / reasons / pipeline / trace */
 .badge {{ border-radius:13px; padding:16px 18px; border:1px solid; display:flex;
          align-items:center; justify-content:space-between; margin-bottom:6px; }}
 .badge .lab {{ font-size:21px; font-weight:800; }}
@@ -89,28 +91,21 @@ div[data-testid="column"] .stButton > button:hover {{ border-color:{ACCENT}; col
 .approve {{ background:{ACC_SOFT}; border-color:#BFE3D2; color:{GREEN}; }}
 .review  {{ background:#FBF2DF; border-color:#EEDCAE; color:{AMBER}; }}
 .reject  {{ background:#FBE7E7; border-color:#F1C4C4; color:{RED}; }}
-
-/* reasons */
 .reason {{ display:flex; align-items:flex-start; gap:9px; padding:8px 0; border-bottom:1px solid {BORDER}; font-size:14px; }}
 .reason:last-child {{ border-bottom:none; }}
 .rdot {{ width:8px; height:8px; border-radius:50%; margin-top:6px; flex:none; }}
 .rpos {{ background:{GREEN}; }} .rneg {{ background:{RED}; }} .rneu {{ background:{AMBER}; }}
-
-/* pipeline */
-.pipe {{ display:flex; align-items:center; flex-wrap:wrap; }}
+.pipe {{ display:flex; align-items:center; flex-wrap:wrap; gap:4px; }}
 .pstep {{ display:flex; align-items:center; gap:8px; background:#F7FAF8; border:1px solid #DCEAE3;
          border-radius:10px; padding:8px 13px; }}
 .pnum {{ width:20px; height:20px; border-radius:50%; background:{ACCENT}; color:#fff;
         font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; }}
 .pstep .pl {{ font-size:13px; font-weight:600; color:{INK}; }}
-.psep {{ color:#C4D3CB; padding:0 7px; }}
-
-/* agent trace */
+.psep {{ color:#C4D3CB; }}
 .trace {{ background:#F7FAF8; border:1px solid #DCEAE3; border-left:3px solid {ACCENT};
          border-radius:10px; padding:11px 14px; margin:8px 0; font-size:13px; color:{INK}; }}
 .trace .tn {{ color:{ACCENT}; font-weight:700; font-family:'SF Mono',Menlo,monospace; }}
 .trace code {{ background:#EAF2EE; padding:1px 6px; border-radius:5px; font-size:12px; }}
-
 .callout {{ background:{ACC_SOFT}; border:1px solid #BFE3D2; border-radius:11px;
            padding:12px 15px; font-size:13.5px; color:#0E5D40; margin-bottom:16px; line-height:1.5; }}
 .kv {{ font-size:14px; line-height:1.95; }}
@@ -225,6 +220,8 @@ Follow this loop and briefly show each step:
 
 Reply in the user's language. Be concise."""
 
+MODELS = ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-1.5-flash"]
+
 def get_client():
     key = os.environ.get("GEMINI_API_KEY") or st.secrets.get("GEMINI_API_KEY", None)
     return genai.Client(api_key=key) if key else None
@@ -233,22 +230,27 @@ def run_agent(client, history, user_msg, render):
     contents = history + [types.Content(role="user", parts=[types.Part(text=user_msg)])]
     cfg = types.GenerateContentConfig(system_instruction=SYSTEM, tools=[TOOLS],
         automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True))
-    for _ in range(8):
-        resp = client.models.generate_content(model="gemini-2.0-flash", contents=contents, config=cfg)
-        cand = resp.candidates[0]; parts = cand.content.parts or []
-        for p in parts:
-            if getattr(p, "text", None): render("text", p.text.strip())
-        fcs = [p.function_call for p in parts if getattr(p, "function_call", None)]
-        if fcs:
-            contents.append(cand.content); rp = []
-            for fc in fcs:
-                args = dict(fc.args); render("tool", (fc.name, args))
-                result = execute_tool(fc.name, args); render("result", (fc.name, result))
-                rp.append(types.Part.from_function_response(name=fc.name, response={"result": result}))
-            contents.append(types.Content(role="user", parts=rp)); continue
-        else:
-            contents.append(cand.content); break
-    return contents
+    model = st.session_state.get("gem_model", MODELS[0])
+    try:
+        for _ in range(8):
+            resp = client.models.generate_content(model=model, contents=contents, config=cfg)
+            cand = resp.candidates[0]; parts = cand.content.parts or []
+            for p in parts:
+                if getattr(p, "text", None): render("text", p.text.strip())
+            fcs = [p.function_call for p in parts if getattr(p, "function_call", None)]
+            if fcs:
+                contents.append(cand.content); rp = []
+                for fc in fcs:
+                    args = dict(fc.args); render("tool", (fc.name, args))
+                    result = execute_tool(fc.name, args); render("result", (fc.name, result))
+                    rp.append(types.Part.from_function_response(name=fc.name, response={"result": result}))
+                contents.append(types.Content(role="user", parts=rp)); continue
+            else:
+                contents.append(cand.content); break
+        return contents
+    except Exception as e:
+        render("error", str(e))
+        return history   # keep prior history intact on failure
 
 
 # ---------------- plotly (light) ----------------
@@ -323,23 +325,24 @@ def mf_figure():
 PCFG = {"displayModeBar": False, "responsive": True}
 
 
-# ---------------- top nav (always visible) ----------------
-st.markdown('<div class="brandbar"><div class="sb-logo">L</div>'
+# ================================================================
+# LAYOUT
+# ================================================================
+st.markdown('<div class="brandbar"><div class="blogo">L</div>'
             '<div><div class="t">Loan Approval Intelligence</div>'
             '<div class="s">Fuzzy Logic · Genetic Algorithm · AI Agent</div></div></div>',
             unsafe_allow_html=True)
-page = st.radio("nav", ["Assess", "AI Agent", "GA Results", "Membership Functions"],
-                horizontal=True, label_visibility="collapsed")
 
 def header(eyebrow, title, desc):
     st.markdown(f'<div class="eyebrow">{eyebrow}</div><div class="h-title">{title}</div>'
                 f'<div class="h-desc">{desc}</div>', unsafe_allow_html=True)
 
+tab_assess, tab_agent, tab_ga, tab_mf = st.tabs(
+    ["Assess", "AI Agent", "GA Results", "Membership Functions"])
 
-# ================================================================
-# ASSESS
-# ================================================================
-if page == "Assess":
+
+# ---------------- ASSESS ----------------
+with tab_assess:
     header("Risk Assessment", "Evaluate Applicant",
            "Enter the five inputs the GA-optimised fuzzy engine evaluates to produce a risk score and decision.")
     col_in, col_out = st.columns([1, 1], gap="large")
@@ -376,9 +379,8 @@ if page == "Assess":
                 st.markdown('<div style="font-weight:700;font-size:14px;margin:2px 0 4px;">Main reasons</div>',
                             unsafe_allow_html=True)
                 cmap = {"pos": "rpos", "neg": "rneg", "neu": "rneu"}
-                html = ""
-                for kind, text in reasons_from_degrees(r["membership_degrees"]):
-                    html += f'<div class="reason"><span class="rdot {cmap[kind]}"></span>{text}</div>'
+                html = "".join(f'<div class="reason"><span class="rdot {cmap[k]}"></span>{t}</div>'
+                               for k, t in reasons_from_degrees(r["membership_degrees"]))
                 st.markdown(html, unsafe_allow_html=True)
             else:
                 st.markdown('<div style="text-align:center;color:#9AA8B0;padding:46px 10px;font-size:14px;">'
@@ -387,10 +389,8 @@ if page == "Assess":
                             unsafe_allow_html=True)
 
 
-# ================================================================
-# AI AGENT
-# ================================================================
-elif page == "AI Agent":
+# ---------------- AI AGENT ----------------
+with tab_agent:
     header("Agentic Reasoning", "AI Agent",
            "A reasoning agent that calls the fuzzy engine as a tool. It observes the input, gathers "
            "missing evidence, runs the engine, tests what-if scenarios, then explains and decides.")
@@ -427,12 +427,19 @@ elif page == "AI Agent":
             if ec[i].button(e, key=f"ex{i}", use_container_width=True):
                 st.session_state.queued = e
 
+    # conversation history
     for role, text in st.session_state.chat_log:
         with st.chat_message(role):
             st.markdown(text, unsafe_allow_html=True)
 
-    typed = st.chat_input("Describe an applicant…", disabled=(client is None))
-    prompt = typed or st.session_state.queued
+    # input form (works reliably inside tabs, unlike chat_input)
+    with st.form("agent_form", clear_on_submit=True):
+        fc1, fc2 = st.columns([5, 1])
+        user_text = fc1.text_input("msg", placeholder="Describe an applicant…",
+                                   label_visibility="collapsed", disabled=(client is None))
+        sent = fc2.form_submit_button("Send", use_container_width=True, disabled=(client is None))
+
+    prompt = (user_text.strip() if (sent and user_text.strip()) else None) or st.session_state.queued
     st.session_state.queued = None
 
     if prompt and client is not None:
@@ -461,16 +468,17 @@ elif page == "AI Agent":
                         box.markdown(f'<div class="trace"><span class="tn">result</span> '
                                      f'<code>{json.dumps(res, ensure_ascii=False)}</code></div>',
                                      unsafe_allow_html=True)
+                elif kind == "error":
+                    box.error(f"Agent error: {payload}")
+                    buf["text"].append(f"_Agent error: {payload}_")
             with st.spinner("Agent reasoning…"):
                 st.session_state.gem_history = run_agent(
                     client, st.session_state.gem_history, prompt, render)
             st.session_state.chat_log.append(("assistant", "\n\n".join(buf["text"]) or "_done_"))
 
 
-# ================================================================
-# GA RESULTS
-# ================================================================
-elif page == "GA Results":
+# ---------------- GA RESULTS ----------------
+with tab_ga:
     header("Data-Driven Optimisation", "Genetic Algorithm",
            "The GA tunes the fuzzy membership-function breakpoints by minimising the error between "
            "the model's risk output and the real loan-status labels.")
@@ -512,10 +520,8 @@ elif page == "GA Results":
         }, use_container_width=True, hide_index=True)
 
 
-# ================================================================
-# MEMBERSHIP FUNCTIONS
-# ================================================================
-elif page == "Membership Functions":
+# ---------------- MEMBERSHIP FUNCTIONS ----------------
+with tab_mf:
     header("Fuzzy Sets", "Membership Functions",
            "The fuzzy sets the inference engine uses. Three variables are tuned by the GA; credit and "
            "default are fixed by standard. Hover any curve to read its membership value.")
