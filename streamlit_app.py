@@ -26,136 +26,124 @@ st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 .stApp {{ background:{PAGE}; }}
-html, body, [class*="css"] {{ font-family:{FONT}; color:{INK}; font-size:15px; }}
-/* compact page */
-.main .block-container, [data-testid="stAppViewContainer"] .main .block-container {{
-    padding-top:0rem !important; padding-bottom:1rem !important; max-width:1480px !important;
-    padding-left:1.25rem !important; padding-right:1.25rem !important;
-    margin-left:auto !important; margin-right:auto !important;
-}}
+html, body, [class*="css"] {{ font-family:{FONT}; color:{INK}; font-size:14px; }}
 #MainMenu, footer {{ visibility:hidden; }}
-[data-testid="stHeader"] {{ display:none; }}
-[data-testid="stToolbar"] {{ display:none; }}
-[data-testid="stSidebar"] {{
-    background:#FFFFFF !important; border-right:1px solid #E3E8EE !important;
-    min-width:245px !important; max-width:245px !important;
+[data-testid="stHeader"] {{ background:transparent !important; height:0px !important; }}
+[data-testid="stToolbar"] {{ display:none !important; }}
+[data-testid="collapsedControl"] {{ display:flex !important; }}
+
+/* kill Streamlit default giant top padding */
+.main .block-container,
+[data-testid="stAppViewContainer"] .main .block-container,
+section.main > div {{
+    padding-top:.55rem !important;
+    padding-bottom:1rem !important;
+    padding-left:.85rem !important;
+    padding-right:.85rem !important;
+    max-width:1500px !important;
 }}
-[data-testid="stSidebar"] > div:first-child {{ padding-top:.55rem !important; padding-left:.75rem; padding-right:.75rem; }}
-[data-testid="collapsedControl"] {{ display:none !important; }}
-[data-testid="stSidebar"] .stRadio > label {{ display:none; }}
-[data-testid="stSidebar"] [role="radiogroup"] {{ gap:7px; }}
-[data-testid="stSidebar"] [role="radio"] {{ border-radius:12px; padding:10px 12px; border:1px solid transparent; }}
-[data-testid="stSidebar"] [role="radio"][aria-checked="true"] {{ background:#E7F3EE; border-color:#BFE3D2; }}
-[data-testid="stSidebar"] [role="radio"][aria-checked="true"] p {{ color:#137A54 !important; font-weight:800 !important; }}
-[data-testid="stSidebar"] [role="radio"] p {{ font-weight:650 !important; }}
+div[data-testid="stVerticalBlock"] {{ gap:.65rem !important; }}
 
-/* brand bar */
-.brandbar {{ display:flex; align-items:center; gap:9px; margin-bottom:10px; }}
-.blogo {{ width:34px; height:34px; border-radius:10px; background:{ACCENT};
+/* in-page sidebar: guaranteed visible, unlike native sidebar */
+.nav-card {{
+    background:#FFFFFF; border:1px solid {BORDER}; border-radius:18px;
+    padding:14px 12px; min-height:calc(100vh - 34px);
+    box-shadow:0 4px 18px rgba(15,35,44,.045);
+}}
+.brandbar {{ display:flex; align-items:center; gap:10px; margin-bottom:16px; }}
+.blogo {{ width:36px; height:36px; border-radius:12px; background:{ACCENT};
          display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:16px; }}
-.brandbar .t {{ font-size:15.5px; font-weight:800; color:{INK}; line-height:1.1; letter-spacing:-.3px; }}
-.brandbar .s {{ font-size:11px; color:{MUTED}; letter-spacing:1px; text-transform:uppercase; font-weight:600; }}
+.brandbar .t {{ font-size:15.5px; font-weight:800; color:{INK}; line-height:1.1; letter-spacing:-.25px; }}
+.brandbar .s {{ font-size:10px; color:{MUTED}; letter-spacing:.9px; text-transform:uppercase; font-weight:700; margin-top:3px; }}
+.nav-mini {{ font-size:11px; color:{MUTED}; line-height:1.45; margin:12px 2px 10px; }}
+.nav-label {{ font-size:10.5px; color:{MUTED}; letter-spacing:1.4px; text-transform:uppercase; font-weight:800; margin:12px 2px 7px; }}
 
-/* tabs -> clean segmented nav */
-.stTabs [data-baseweb="tab-list"] {{ gap:6px; background:{CARD}; border:1px solid {BORDER};
-    border-radius:14px; padding:6px; box-shadow:0 1px 2px rgba(16,42,34,.04); }}
-.stTabs [data-baseweb="tab-list"] button {{ height:40px; border-radius:10px; padding:0 20px;
-    background:transparent; }}
-.stTabs [data-baseweb="tab-list"] button p {{ font-size:14px; font-weight:600; color:{MUTED}; }}
-.stTabs [aria-selected="true"] {{ background:{ACCENT} !important; }}
-.stTabs [aria-selected="true"] p {{ color:#fff !important; }}
-.stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] {{ display:none; }}
-.stTabs [data-baseweb="tab-panel"] {{ padding-top:14px; }}
+/* radio as sidebar nav */
+div[role="radiogroup"] {{ gap:7px !important; }}
+div[role="radio"] {{ border-radius:12px !important; padding:9px 11px !important; border:1px solid transparent !important; }}
+div[role="radio"] p {{ font-weight:750 !important; font-size:13.5px !important; color:{MUTED} !important; }}
+div[role="radio"][aria-checked="true"] {{ background:{ACCENT} !important; border-color:{ACCENT} !important; }}
+div[role="radio"][aria-checked="true"] p {{ color:#fff !important; }}
 
-/* page header */
-.eyebrow {{ font-size:11.5px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase; color:{ACCENT}; margin-bottom:4px; }}
-.h-title {{ font-size:22px; font-weight:800; letter-spacing:-.5px; color:{INK}; margin:0 0 4px; }}
-.h-desc {{ font-size:13.5px; color:{MUTED}; margin-bottom:8px; max-width:900px; line-height:1.45; }}
+/* typography */
+.eyebrow {{ font-size:10.5px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:{ACCENT}; margin-bottom:3px; }}
+.h-title {{ font-size:22px; font-weight:800; letter-spacing:-.55px; color:{INK}; margin:0 0 4px; }}
+.h-desc {{ font-size:13.2px; color:{MUTED}; max-width:920px; line-height:1.43; }}
+.compact-head {{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin:0 0 8px; }}
+.compact-head .left {{ min-width:0; }}
+.status-pill {{ font-size:11.5px; font-weight:800; color:{ACCENT}; background:{ACC_SOFT}; border:1px solid #BFE3D2; padding:7px 12px; border-radius:999px; white-space:nowrap; }}
 
-/* native bordered container -> card */
+/* cards */
 [data-testid="stVerticalBlockBorderWrapper"] {{ background:{CARD}; border:1px solid {BORDER} !important;
-    border-radius:16px; box-shadow:0 1px 2px rgba(16,42,34,.04); }}
-.ch {{ font-size:16px; font-weight:700; color:{INK}; margin:2px 0 2px; }}
-.cs {{ font-size:13px; color:{MUTED}; margin-bottom:14px; }}
+    border-radius:15px; box-shadow:0 2px 8px rgba(15,35,44,.035); }}
+.ch {{ font-size:16px; font-weight:800; color:{INK}; margin:0 0 2px; }}
+.cs {{ font-size:12.6px; color:{MUTED}; margin-bottom:10px; line-height:1.35; }}
 
-/* metric cards */
-.mwrap {{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:16px; }}
-.mcard {{ flex:1; min-width:160px; background:{CARD}; border:1px solid {BORDER};
-         border-radius:14px; padding:16px 18px; box-shadow:0 1px 2px rgba(16,42,34,.04); }}
-.mcard .k {{ font-size:11px; color:{MUTED}; text-transform:uppercase; letter-spacing:.9px; font-weight:700; }}
-.mcard .v {{ font-size:25px; font-weight:800; color:{INK}; margin-top:6px; letter-spacing:-.5px; }}
-.mcard .v .ac {{ color:{ACCENT}; }}
-.mcard .d {{ font-size:12px; color:{MUTED}; margin-top:3px; }}
-
-/* form */
-[data-testid="stWidgetLabel"] p {{ color:{INK} !important; font-weight:600 !important; font-size:13px !important; }}
+/* inputs */
+[data-testid="stWidgetLabel"] p {{ color:{INK} !important; font-weight:700 !important; font-size:12.6px !important; }}
 .stNumberInput input, .stSelectbox div[data-baseweb="select"] > div, .stTextInput input {{
     background:#FBFCFD !important; color:{INK} !important; border:1px solid {BORDER} !important;
-    border-radius:10px !important; font-size:14.5px !important; }}
-.stNumberInput button {{ background:#FBFCFD !important; border:1px solid {BORDER} !important; color:{INK} !important; }}
+    border-radius:10px !important; font-size:14px !important; min-height:38px !important; }}
+.stNumberInput button {{ background:#FBFCFD !important; border:1px solid {BORDER} !important; color:{INK} !important; min-height:38px !important; }}
 .stButton > button, .stFormSubmitButton > button {{ background:{ACCENT}; color:#fff; border:none;
-    border-radius:11px; font-weight:700; padding:11px 0; font-size:15px; }}
-.stButton > button:hover, .stFormSubmitButton > button:hover {{ filter:brightness(1.08); }}
-div[data-testid="column"] .stButton > button {{ background:#FFFFFF; color:{INK};
-    border:1px solid {BORDER}; font-weight:600; font-size:13px; padding:10px 12px; }}
-div[data-testid="column"] .stButton > button:hover {{ border-color:{ACCENT}; color:{ACCENT}; filter:none; }}
+    border-radius:11px; font-weight:800; padding:10px 0; font-size:14px; }}
+.stButton > button:hover, .stFormSubmitButton > button:hover {{ filter:brightness(1.07); }}
 
-/* badge / reasons / pipeline / trace */
-.badge {{ border-radius:13px; padding:16px 18px; border:1px solid; display:flex;
-         align-items:center; justify-content:space-between; margin-bottom:6px; }}
-.badge .lab {{ font-size:21px; font-weight:800; }}
-.badge .sc {{ font-size:14px; font-weight:700; }}
+/* result */
+.badge {{ border-radius:13px; padding:13px 16px; border:1px solid; display:flex;
+         align-items:center; justify-content:space-between; margin-bottom:8px; }}
+.badge .lab {{ font-size:20px; font-weight:900; }}
+.badge .sc {{ font-size:13px; font-weight:800; }}
 .approve {{ background:{ACC_SOFT}; border-color:#BFE3D2; color:{GREEN}; }}
 .review  {{ background:#FBF2DF; border-color:#EEDCAE; color:{AMBER}; }}
 .reject  {{ background:#FBE7E7; border-color:#F1C4C4; color:{RED}; }}
-.reason {{ display:flex; align-items:flex-start; gap:9px; padding:8px 0; border-bottom:1px solid {BORDER}; font-size:14px; }}
-.reason:last-child {{ border-bottom:none; }}
-.rdot {{ width:8px; height:8px; border-radius:50%; margin-top:6px; flex:none; }}
-.rpos {{ background:{GREEN}; }} .rneg {{ background:{RED}; }} .rneu {{ background:{AMBER}; }}
-.pipe {{ display:flex; align-items:center; flex-wrap:wrap; gap:4px; }}
-.pstep {{ display:flex; align-items:center; gap:8px; background:#F7FAF8; border:1px solid #DCEAE3;
-         border-radius:10px; padding:8px 13px; }}
-.pnum {{ width:20px; height:20px; border-radius:50%; background:{ACCENT}; color:#fff;
-        font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; }}
-.pstep .pl {{ font-size:13px; font-weight:600; color:{INK}; }}
-.psep {{ color:#C4D3CB; }}
+.info-grid {{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:8px 0 10px; }}
+.infobox {{ background:#FBFCFD; border:1px solid {BORDER}; border-radius:12px; padding:9px 10px; }}
+.infobox .ik {{ font-size:10px; letter-spacing:1px; text-transform:uppercase; font-weight:900; color:{MUTED}; }}
+.infobox .iv {{ font-size:15.5px; font-weight:850; color:{INK}; margin-top:3px; }}
 .trace {{ background:#F7FAF8; border:1px solid #DCEAE3; border-left:3px solid {ACCENT};
-         border-radius:10px; padding:11px 14px; margin:8px 0; font-size:13px; color:{INK}; }}
-.trace .tn {{ color:{ACCENT}; font-weight:700; font-family:'SF Mono',Menlo,monospace; }}
-.trace code {{ background:#EAF2EE; padding:1px 6px; border-radius:5px; font-size:12px; }}
+         border-radius:10px; padding:9px 12px; margin:7px 0; font-size:12.5px; color:{INK}; }}
+.trace .tn {{ color:{ACCENT}; font-weight:800; font-family:'SF Mono',Menlo,monospace; }}
+.trace code {{ background:#EAF2EE; padding:1px 5px; border-radius:5px; font-size:11.5px; }}
+.reason {{ display:flex; align-items:flex-start; gap:8px; padding:7px 0; border-bottom:1px solid {BORDER}; font-size:13.2px; }}
+.reason:last-child {{ border-bottom:none; }}
+.rdot {{ width:8px; height:8px; border-radius:50%; margin-top:5px; flex:none; }}
+.rpos {{ background:{GREEN}; }} .rneg {{ background:{RED}; }} .rneu {{ background:{AMBER}; }}
 .callout {{ background:{ACC_SOFT}; border:1px solid #BFE3D2; border-radius:11px;
-           padding:12px 15px; font-size:13.5px; color:#0E5D40; margin-bottom:16px; line-height:1.5; }}
-.kv {{ font-size:14px; line-height:1.95; }}
+           padding:10px 12px; font-size:13px; color:#0E5D40; margin-top:9px; line-height:1.45; }}
+.kv {{ font-size:14px; line-height:1.9; }}
 
-/* compact hero + agent timeline */
-.hero {{ background:{CARD}; border:1px solid {BORDER}; border-radius:14px; padding:10px 14px; margin-bottom:8px;
-        box-shadow:0 1px 3px rgba(16,42,34,.05); }}
-.agent-card {{ background:{CARD}; border:1px solid {BORDER}; border-radius:14px; padding:10px 14px; margin:0 0 10px;
-        box-shadow:0 1px 3px rgba(16,42,34,.05); }}
-.agent-head {{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:9px; }}
-.agent-title {{ font-size:15.5px; font-weight:800; color:{INK}; }}
-.agent-status {{ font-size:12px; color:{ACCENT}; font-weight:700; background:{ACC_SOFT}; border:1px solid #BFE3D2; padding:6px 10px; border-radius:999px; }}
-.timeline {{ position:relative; display:grid; grid-template-columns:repeat(6,1fr); gap:14px; align-items:start; }}
-.timeline:before {{ content:""; position:absolute; left:6%; right:6%; top:17px; height:3px; background:#DCEAE3; border-radius:99px; }}
-.timeline:after {{ content:""; position:absolute; left:6%; top:17px; height:3px; width:var(--fill,0%); background:{ACCENT}; border-radius:99px; transition:width .45s ease; }}
+/* compact agent strip */
+.agent-strip {{ background:{CARD}; border:1px solid {BORDER}; border-radius:15px; padding:10px 12px;
+        box-shadow:0 2px 8px rgba(15,35,44,.035); margin-bottom:10px; }}
+.agent-head {{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:6px; }}
+.agent-title {{ font-size:15.5px; font-weight:850; color:{INK}; }}
+.agent-sub {{ font-size:12px; color:{MUTED}; }}
+.agent-status {{ font-size:11.5px; color:{ACCENT}; font-weight:800; background:{ACC_SOFT}; border:1px solid #BFE3D2; padding:5px 9px; border-radius:999px; }}
+.timeline {{ position:relative; display:grid; grid-template-columns:repeat(6,1fr); gap:10px; align-items:start; padding-top:2px; }}
+.timeline:before {{ content:""; position:absolute; left:7%; right:7%; top:14px; height:3px; background:#DCEAE3; border-radius:99px; }}
+.timeline:after {{ content:""; position:absolute; left:7%; top:14px; height:3px; width:var(--fill,0%); background:{ACCENT}; border-radius:99px; transition:width .45s ease; }}
 .titem {{ position:relative; z-index:1; text-align:center; min-width:0; }}
-.tcircle {{ width:34px; height:34px; border-radius:999px; margin:0 auto 6px; display:flex; align-items:center; justify-content:center;
-          background:#F7FAF8; border:2px solid #DCEAE3; color:{MUTED}; font-weight:800; box-shadow:0 0 0 6px {CARD}; }}
+.tcircle {{ width:28px; height:28px; border-radius:999px; margin:0 auto 4px; display:flex; align-items:center; justify-content:center;
+          background:#F7FAF8; border:2px solid #DCEAE3; color:{MUTED}; font-weight:850; font-size:12px; box-shadow:0 0 0 5px {CARD}; }}
 .titem.done .tcircle {{ background:{ACCENT}; border-color:{ACCENT}; color:white; }}
 .titem.active .tcircle {{ background:{ACCENT}; border-color:{ACCENT}; color:white; animation:pulse 1.1s infinite; }}
-.tlabel {{ font-size:12px; font-weight:800; color:{INK}; white-space:nowrap; }}
-.tdesc {{ font-size:10.5px; color:{MUTED}; line-height:1.2; margin-top:2px; }}
-@keyframes pulse {{ 0% {{ box-shadow:0 0 0 6px {CARD},0 0 0 8px rgba(19,122,84,.20); }} 70% {{ box-shadow:0 0 0 6px {CARD},0 0 0 17px rgba(19,122,84,0); }} 100% {{ box-shadow:0 0 0 6px {CARD},0 0 0 8px rgba(19,122,84,0); }} }}
-.info-grid {{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:10px 0 12px; }}
-.infobox {{ background:#FBFCFD; border:1px solid {BORDER}; border-radius:12px; padding:10px 12px; }}
-.infobox .ik {{ font-size:10.5px; letter-spacing:.9px; text-transform:uppercase; font-weight:800; color:{MUTED}; }}
-.infobox .iv {{ font-size:16px; font-weight:800; color:{INK}; margin-top:3px; }}
-.top-compact {{ display:flex; align-items:flex-start; justify-content:space-between; gap:18px; margin-bottom:8px; }}
-.top-compact .hero {{ flex:1; margin-bottom:0; }}
-.top-compact .agent-card {{ flex:1.18; margin-bottom:0; }}
-@media (max-width: 1100px) {{ .top-compact {{ display:block; }} .top-compact .hero {{ margin-bottom:8px; }} }}
-@media (max-width: 900px) {{ .timeline {{ grid-template-columns:repeat(3,1fr); }} .timeline:before,.timeline:after{{display:none}} .info-grid{{grid-template-columns:1fr}} }}
+.tlabel {{ font-size:11.7px; font-weight:850; color:{INK}; white-space:nowrap; }}
+.tdesc {{ display:none; }}
+@keyframes pulse {{ 0% {{ box-shadow:0 0 0 5px {CARD},0 0 0 7px rgba(19,122,84,.22); }} 70% {{ box-shadow:0 0 0 5px {CARD},0 0 0 16px rgba(19,122,84,0); }} 100% {{ box-shadow:0 0 0 5px {CARD},0 0 0 7px rgba(19,122,84,0); }} }}
 
+/* GA cards */
+.mwrap {{ display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px; }}
+.mcard {{ flex:1; min-width:160px; background:{CARD}; border:1px solid {BORDER}; border-radius:14px; padding:14px 16px; box-shadow:0 2px 8px rgba(15,35,44,.035); }}
+.mcard .k {{ font-size:10.5px; color:{MUTED}; text-transform:uppercase; letter-spacing:.9px; font-weight:850; }}
+.mcard .v {{ font-size:24px; font-weight:900; color:{INK}; margin-top:5px; letter-spacing:-.5px; }}
+.mcard .v .ac {{ color:{ACCENT}; }}
+.mcard .d {{ font-size:12px; color:{MUTED}; margin-top:2px; }}
+
+@media (max-width: 1000px) {{
+    .timeline {{ grid-template-columns:repeat(3,1fr); }} .timeline:before,.timeline:after{{display:none}}
+    .info-grid{{grid-template-columns:1fr}}
+}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -397,170 +385,174 @@ def render_agent_process(active=0, mode="idle"):
 # ================================================================
 # LAYOUT
 # ================================================================
-with st.sidebar:
+
+def render_sidebar_nav():
+    st.markdown('<div class="nav-card">', unsafe_allow_html=True)
     st.markdown('<div class="brandbar"><div class="blogo">L</div>'
                 '<div><div class="t">Loan Approval Intelligence</div>'
                 '<div class="s">Fuzzy Logic · GA · AI Agent</div></div></div>',
                 unsafe_allow_html=True)
-    page = st.radio("Navigation", ["Assess", "GA Results", "Membership Functions"], label_visibility="collapsed")
-    st.markdown('<div class="cs" style="margin-top:14px;line-height:1.45;">GA-optimised fuzzy risk engine with integrated agentic evaluation.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="nav-label">Workspace</div>', unsafe_allow_html=True)
+    page = st.radio("Navigation", ["Assess", "GA Results", "Membership Functions"],
+                    label_visibility="collapsed", key="nav_page")
+    st.markdown('<div class="nav-mini">GA-optimised fuzzy risk engine with integrated agentic evaluation.</div>',
+                unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+    return page
 
-def header(eyebrow, title, desc):
-    st.markdown(f'<div class="eyebrow">{eyebrow}</div><div class="h-title">{title}</div>'
-                f'<div class="h-desc">{desc}</div>', unsafe_allow_html=True)
+def header(eyebrow, title, desc, pill=None):
+    p = f'<div class="status-pill">{pill}</div>' if pill else ''
+    st.markdown(f'<div class="compact-head"><div class="left"><div class="eyebrow">{eyebrow}</div>'
+                f'<div class="h-title">{title}</div><div class="h-desc">{desc}</div></div>{p}</div>',
+                unsafe_allow_html=True)
 
-# ---------------- ASSESS ----------------
-if page == "Assess":
-    top_left, top_right = st.columns([0.82, 1.18], gap="medium")
-    with top_left:
-        st.markdown('<div class="hero"><div class="eyebrow">Risk Assessment</div><div class="h-title">Evaluate Applicant</div>'
-                    '<div class="h-desc">Integrated agentic evaluation: observe input, check CTOS evidence, call the GA-optimised fuzzy engine, explain membership degrees, and return the final decision.</div></div>',
-                    unsafe_allow_html=True)
-    with top_right:
+nav_col, main_col = st.columns([0.17, 0.83], gap="medium")
+with nav_col:
+    page = render_sidebar_nav()
+
+with main_col:
+    # ---------------- ASSESS ----------------
+    if page == "Assess":
+        header("Risk Assessment", "Evaluate Applicant",
+               "Integrated agentic evaluation: observe input, check CTOS evidence, call the GA-optimised fuzzy engine, explain membership degrees, and return the final decision.")
+
         process_slot = st.empty()
         process_slot.markdown(render_agent_process(active=0, mode="idle"), unsafe_allow_html=True)
 
-    col_in, col_out = st.columns([1, 1], gap="medium")
+        col_in, col_out = st.columns([0.48, 0.52], gap="medium")
 
-    with col_in:
-        with st.container(border=True):
-            st.markdown('<div class="ch">Applicant Information</div>'
-                        '<div class="cs">Five inputs used by the fuzzy inference engine.</div>',
-                        unsafe_allow_html=True)
-            a, b = st.columns(2)
-            income = a.number_input("Annual income (RM)", 0, 1_000_000, 65000, step=1000)
-            credit = b.number_input("Credit score (CTOS)", 300, 850, 720)
-            ratio  = a.number_input("Loan as % of income (0–1)", 0.0, 1.0, 0.18, step=0.01)
-            emp    = b.number_input("Employment experience (yrs)", 0.0, 50.0, 4.0, step=0.5)
-            default = st.selectbox("Previous loan default", ["No", "Yes"])
-            evaluate_clicked = st.button("Evaluate Applicant", use_container_width=True, type="primary")
-            st.markdown('<div class="cs" style="margin:12px 0 0;">CTOS bands: 300–449 Very Poor · '
-                        '450–549 Poor · 550–649 Fair · 650–749 Good · 750–850 Excellent</div>',
-                        unsafe_allow_html=True)
-
-    with col_out:
-        with st.container(border=True):
-            st.markdown('<div class="ch">Assessment Result</div>'
-                        '<div class="cs">Decision, risk gauge, tool trace, and reasons drawn from the model.</div>',
-                        unsafe_allow_html=True)
-            if evaluate_clicked:
-                step_text = ["Observe", "Collect", "Reason", "Call Engine", "Explain", "Act"]
-                for i in range(1, 7):
-                    process_slot.markdown(render_agent_process(active=i, mode="running"), unsafe_allow_html=True)
-                    time.sleep(0.16)
-                process_slot.markdown(render_agent_process(active=6, mode="done"), unsafe_allow_html=True)
-
-                ctos_info = lookup_ctos_category(credit)
-                r = compute_risk_detailed(income, credit, ratio, default, emp)
-                d = r["membership_degrees"]
-
-                cls = {"APPROVE": "approve", "REVIEW": "review", "REJECT": "reject"}[r["decision"]]
-                st.markdown(f'<div class="badge {cls}"><span class="lab">{r["decision"]}</span>'
-                            f'<span class="sc">Risk {r["risk_score"]} / 100</span></div>',
+        with col_in:
+            with st.container(border=True):
+                st.markdown('<div class="ch">Applicant Information</div>'
+                            '<div class="cs">Five inputs used by the fuzzy inference engine.</div>',
+                            unsafe_allow_html=True)
+                a, b = st.columns(2)
+                income = a.number_input("Annual income (RM)", 0, 1_000_000, 65000, step=1000)
+                credit = b.number_input("Credit score (CTOS)", 300, 850, 720)
+                ratio  = a.number_input("Loan as % of income (0–1)", 0.0, 1.0, 0.18, step=0.01)
+                emp    = b.number_input("Employment experience (yrs)", 0.0, 50.0, 4.0, step=0.5)
+                default = st.selectbox("Previous loan default", ["No", "Yes"])
+                evaluate_clicked = st.button("Evaluate Applicant", use_container_width=True, type="primary")
+                st.markdown('<div class="cs" style="margin:10px 0 0;">CTOS bands: 300–449 Very Poor · '
+                            '450–549 Poor · 550–649 Fair · 650–749 Good · 750–850 Excellent</div>',
                             unsafe_allow_html=True)
 
-                st.markdown(f'<div class="info-grid">'
-                            f'<div class="infobox"><div class="ik">CTOS Evidence</div><div class="iv">{credit} · {ctos_info["category"]}</div></div>'
-                            f'<div class="infobox"><div class="ik">Loan Ratio</div><div class="iv">{ratio:.2f}</div></div>'
-                            f'<div class="infobox"><div class="ik">Employment</div><div class="iv">{emp:.1f} years</div></div>'
-                            f'</div>', unsafe_allow_html=True)
-
-                st.plotly_chart(risk_gauge(r["risk_score"], r["decision"]),
-                                use_container_width=True, config=PCFG)
-
-                st.markdown(f'<div class="trace"><span class="tn">collect</span> CTOS {credit} → '
-                            f'<b>{ctos_info["category"]}</b> credit band</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="trace"><span class="tn">call tool</span> calculate_loan_risk '
-                            f'<code>income={income}, credit={credit}, ratio={ratio}, default={default}, emp={emp}</code></div>',
+        with col_out:
+            with st.container(border=True):
+                st.markdown('<div class="ch">Assessment Result</div>'
+                            '<div class="cs">Decision, risk gauge, tool trace, and reasons drawn from the model.</div>',
                             unsafe_allow_html=True)
-                st.markdown(f'<div class="trace"><span class="tn">explain</span> membership degrees '
-                            f'<code>income_high={d["income_high"]}, ratio_high={d["ratio_high"]}, emp_junior={d["emp_junior"]}, credit_risk={d["credit_risk"]}</code></div>',
-                            unsafe_allow_html=True)
+                if evaluate_clicked:
+                    for i in range(1, 7):
+                        process_slot.markdown(render_agent_process(active=i, mode="running"), unsafe_allow_html=True)
+                        time.sleep(0.14)
+                    process_slot.markdown(render_agent_process(active=6, mode="done"), unsafe_allow_html=True)
 
-                st.markdown('<div style="font-weight:800;font-size:14px;margin:10px 0 4px;">AI explanation</div>',
-                            unsafe_allow_html=True)
-                cmap = {"pos": "rpos", "neg": "rneg", "neu": "rneu"}
-                html = "".join(f'<div class="reason"><span class="rdot {cmap[k]}"></span>{t}</div>'
-                               for k, t in reasons_from_degrees(r["membership_degrees"]))
-                st.markdown(html, unsafe_allow_html=True)
+                    ctos_info = lookup_ctos_category(credit)
+                    r = compute_risk_detailed(income, credit, ratio, default, emp)
+                    d = r["membership_degrees"]
 
-                if r["decision"] in ("REVIEW", "REJECT"):
-                    suggestion = "Reduce the loan-to-income ratio, improve the CTOS score, or build longer employment stability before reapplying."
+                    cls = {"APPROVE": "approve", "REVIEW": "review", "REJECT": "reject"}[r["decision"]]
+                    st.markdown(f'<div class="badge {cls}"><span class="lab">{r["decision"]}</span>'
+                                f'<span class="sc">Risk {r["risk_score"]} / 100</span></div>',
+                                unsafe_allow_html=True)
+
+                    st.markdown(f'<div class="info-grid">'
+                                f'<div class="infobox"><div class="ik">CTOS Evidence</div><div class="iv">{credit} · {ctos_info["category"]}</div></div>'
+                                f'<div class="infobox"><div class="ik">Loan Ratio</div><div class="iv">{ratio:.2f}</div></div>'
+                                f'<div class="infobox"><div class="ik">Employment</div><div class="iv">{emp:.1f} years</div></div>'
+                                f'</div>', unsafe_allow_html=True)
+
+                    st.plotly_chart(risk_gauge(r["risk_score"], r["decision"]),
+                                    use_container_width=True, config=PCFG)
+
+                    st.markdown(f'<div class="trace"><span class="tn">collect</span> CTOS {credit} → '
+                                f'<b>{ctos_info["category"]}</b> credit band</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="trace"><span class="tn">call tool</span> calculate_loan_risk '
+                                f'<code>income={income}, credit={credit}, ratio={ratio}, default={default}, emp={emp}</code></div>',
+                                unsafe_allow_html=True)
+                    st.markdown(f'<div class="trace"><span class="tn">explain</span> membership degrees '
+                                f'<code>income_high={d["income_high"]}, ratio_high={d["ratio_high"]}, emp_junior={d["emp_junior"]}, credit_risk={d["credit_risk"]}</code></div>',
+                                unsafe_allow_html=True)
+
+                    st.markdown('<div style="font-weight:850;font-size:13.5px;margin:8px 0 3px;">AI explanation</div>',
+                                unsafe_allow_html=True)
+                    cmap = {"pos": "rpos", "neg": "rneg", "neu": "rneu"}
+                    html = "".join(f'<div class="reason"><span class="rdot {cmap[k]}"></span>{t}</div>'
+                                   for k, t in reasons_from_degrees(r["membership_degrees"]))
+                    st.markdown(html, unsafe_allow_html=True)
+
+                    if r["decision"] in ("REVIEW", "REJECT"):
+                        suggestion = "Reduce the loan-to-income ratio, improve the CTOS score, or build longer employment stability before reapplying."
+                    else:
+                        suggestion = "Applicant profile is acceptable. Maintain credit quality and repayment discipline."
+                    st.markdown(f'<div class="callout"><b>Action advice:</b> {suggestion}</div>', unsafe_allow_html=True)
                 else:
-                    suggestion = "Applicant profile is acceptable. Maintain credit quality and repayment discipline."
-                st.markdown(f'<div class="callout"><b>Action advice:</b> {suggestion}</div>', unsafe_allow_html=True)
-            else:
-                st.markdown('<div style="text-align:center;color:#8A99A3;padding:32px 10px;font-size:14px;">'
-                            'Waiting for applicant input.<br>Click '
-                            '<b style="color:#137A54">Evaluate Applicant</b> to run the integrated AI agent process.</div>',
+                    st.markdown('<div style="text-align:center;color:#8A99A3;padding:28px 10px;font-size:13.5px;">'
+                                'Waiting for applicant input.<br>Click '
+                                '<b style="color:#137A54">Evaluate Applicant</b> to run the integrated AI agent process.</div>',
+                                unsafe_allow_html=True)
+
+    # ---------------- GA RESULTS ----------------
+    if page == "GA Results":
+        header("Data-Driven Optimisation", "Genetic Algorithm",
+               "The GA tunes the fuzzy membership-function breakpoints by minimising the error between the model's risk output and the real loan-status labels.")
+
+        st.markdown(
+            f'<div class="mwrap">'
+            f'<div class="mcard"><div class="k">Initial Fitness</div><div class="v">{ga["init_fitness"]:.0f}</div>'
+            f'<div class="d">generation 0</div></div>'
+            f'<div class="mcard"><div class="k">Final Fitness</div><div class="v"><span class="ac">{ga["best_fitness"]:.0f}</span></div>'
+            f'<div class="d">best individual</div></div>'
+            f'<div class="mcard"><div class="k">Improvement</div><div class="v"><span class="ac">{ga["improvement_pct"]:.1f}%</span></div>'
+            f'<div class="d">lower = better fit</div></div>'
+            f'<div class="mcard"><div class="k">Reference Data</div><div class="v">{len(fe.REF_STATUS):,}</div>'
+            f'<div class="d">{fe.n_approved:,} approved · {fe.n_rejected:,} rejected</div></div>'
+            f'</div>', unsafe_allow_html=True)
+
+        st.markdown(
+            f'<div class="callout">Fitness dropped <b>{ga["improvement_pct"]:.1f}%</b> '
+            f'({ga["init_fitness"]:.0f} → {ga["best_fitness"]:.0f}) over {fe.GA_GENS} generations — the '
+            f'GA-tuned membership functions match the reference loan data far better than the initial hand-set functions. Lower fitness = closer to ground truth.</div>', unsafe_allow_html=True)
+
+        with st.container(border=True):
+            st.markdown('<div class="ch">Convergence</div>'
+                        f'<div class="cs">Population {fe.GA_POP} · {fe.GA_GENS} generations · two-point crossover · '
+                        f'adaptive mutation · tournament k={fe.GA_TOURNAMENT} · fitness = Σ(loan_status − fuzzy_risk)²</div>',
+                        unsafe_allow_html=True)
+            st.plotly_chart(convergence_figure(), use_container_width=True, config=PCFG)
+
+        with st.container(border=True):
+            st.markdown('<div class="ch">Optimised MF Breakpoints</div>'
+                        '<div class="cs">Evolved parameters for the three GA-tuned variables. Credit and default are fixed, not evolved.</div>', unsafe_allow_html=True)
+            st.dataframe({
+                "Variable": ["Annual Income (RM)", "Loan Ratio (0–1)", "Employment Exp (yrs)"],
+                "a · Low→Mid": [f"{fe.inc_a:,.0f}", f"{fe.rat_a:.4f}", f"{fe.emp_a:.2f}"],
+                "b · Mid peak": [f"{fe.inc_b:,.0f}", f"{fe.rat_b:.4f}", f"{fe.emp_b:.2f}"],
+                "c · Mid→High": [f"{fe.inc_c:,.0f}", f"{fe.rat_c:.4f}", f"{fe.emp_c:.2f}"],
+            }, use_container_width=True, hide_index=True)
+
+    # ---------------- MEMBERSHIP FUNCTIONS ----------------
+    if page == "Membership Functions":
+        header("Fuzzy Sets", "Membership Functions",
+               "The fuzzy sets the inference engine uses. Three variables are tuned by the GA; credit and default are fixed by standard. Hover any curve to read its membership value.")
+
+        c1, c2 = st.columns(2, gap="medium")
+        with c1:
+            with st.container(border=True):
+                st.markdown('<div class="ch" style="color:#137A54;">GA-tuned variables</div>'
+                            '<div class="cs">Data-driven · breakpoints evolved by the genetic algorithm</div>'
+                            '<div class="kv">• Annual Income<br>• Loan-to-Income Ratio<br>• Employment Experience</div>',
+                            unsafe_allow_html=True)
+        with c2:
+            with st.container(border=True):
+                st.markdown('<div class="ch">Fixed variables</div>'
+                            '<div class="cs">Knowledge-driven · set by standard, not evolved</div>'
+                            '<div class="kv">• CTOS Credit Score<br>• Previous Loan Default</div>',
                             unsafe_allow_html=True)
 
-
-# ---------------- GA RESULTS ----------------
-if page == "GA Results":
-    header("Data-Driven Optimisation", "Genetic Algorithm",
-           "The GA tunes the fuzzy membership-function breakpoints by minimising the error between "
-           "the model's risk output and the real loan-status labels.")
-
-    st.markdown(
-        f'<div class="mwrap">'
-        f'<div class="mcard"><div class="k">Initial Fitness</div><div class="v">{ga["init_fitness"]:.0f}</div>'
-        f'<div class="d">generation 0</div></div>'
-        f'<div class="mcard"><div class="k">Final Fitness</div><div class="v"><span class="ac">{ga["best_fitness"]:.0f}</span></div>'
-        f'<div class="d">best individual</div></div>'
-        f'<div class="mcard"><div class="k">Improvement</div><div class="v"><span class="ac">{ga["improvement_pct"]:.1f}%</span></div>'
-        f'<div class="d">lower = better fit</div></div>'
-        f'<div class="mcard"><div class="k">Reference Data</div><div class="v">{len(fe.REF_STATUS):,}</div>'
-        f'<div class="d">{fe.n_approved:,} approved · {fe.n_rejected:,} rejected</div></div>'
-        f'</div>', unsafe_allow_html=True)
-
-    st.markdown(
-        f'<div class="callout">Fitness dropped <b>{ga["improvement_pct"]:.1f}%</b> '
-        f'({ga["init_fitness"]:.0f} → {ga["best_fitness"]:.0f}) over {fe.GA_GENS} generations — the '
-        f'GA-tuned membership functions match the reference loan data far better than the initial '
-        f'hand-set functions. Lower fitness = closer to ground truth.</div>', unsafe_allow_html=True)
-
-    with st.container(border=True):
-        st.markdown('<div class="ch">Convergence</div>'
-                    f'<div class="cs">Population {fe.GA_POP} · {fe.GA_GENS} generations · two-point crossover · '
-                    f'adaptive mutation · tournament k={fe.GA_TOURNAMENT} · fitness = Σ(loan_status − fuzzy_risk)²</div>',
-                    unsafe_allow_html=True)
-        st.plotly_chart(convergence_figure(), use_container_width=True, config=PCFG)
-
-    with st.container(border=True):
-        st.markdown('<div class="ch">Optimised MF Breakpoints</div>'
-                    '<div class="cs">Evolved parameters for the three GA-tuned variables. '
-                    'Credit and default are fixed, not evolved.</div>', unsafe_allow_html=True)
-        st.dataframe({
-            "Variable": ["Annual Income (RM)", "Loan Ratio (0–1)", "Employment Exp (yrs)"],
-            "a · Low→Mid": [f"{fe.inc_a:,.0f}", f"{fe.rat_a:.4f}", f"{fe.emp_a:.2f}"],
-            "b · Mid peak": [f"{fe.inc_b:,.0f}", f"{fe.rat_b:.4f}", f"{fe.emp_b:.2f}"],
-            "c · Mid→High": [f"{fe.inc_c:,.0f}", f"{fe.rat_c:.4f}", f"{fe.emp_c:.2f}"],
-        }, use_container_width=True, hide_index=True)
-
-
-# ---------------- MEMBERSHIP FUNCTIONS ----------------
-if page == "Membership Functions":
-    header("Fuzzy Sets", "Membership Functions",
-           "The fuzzy sets the inference engine uses. Three variables are tuned by the GA; credit and "
-           "default are fixed by standard. Hover any curve to read its membership value.")
-
-    c1, c2 = st.columns(2, gap="large")
-    with c1:
         with st.container(border=True):
-            st.markdown('<div class="ch" style="color:#137A54;">GA-tuned variables</div>'
-                        '<div class="cs">Data-driven · breakpoints evolved by the genetic algorithm</div>'
-                        '<div class="kv">• Annual Income<br>• Loan-to-Income Ratio<br>• Employment Experience</div>',
+            st.markdown('<div class="ch">All membership functions</div>'
+                        '<div class="cs">Hover any curve to read its exact membership value.</div>',
                         unsafe_allow_html=True)
-    with c2:
-        with st.container(border=True):
-            st.markdown('<div class="ch">Fixed variables</div>'
-                        '<div class="cs">Knowledge-driven · set by standard, not evolved</div>'
-                        '<div class="kv">• CTOS Credit Score<br>• Previous Loan Default</div>',
-                        unsafe_allow_html=True)
-
-    with st.container(border=True):
-        st.markdown('<div class="ch">All membership functions</div>'
-                    '<div class="cs">Hover any curve to read its exact membership value.</div>',
-                    unsafe_allow_html=True)
-        st.plotly_chart(mf_figure(), use_container_width=True, config=PCFG)
+            st.plotly_chart(mf_figure(), use_container_width=True, config=PCFG)
