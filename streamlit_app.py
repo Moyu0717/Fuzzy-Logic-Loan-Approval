@@ -6,6 +6,7 @@
 
 import os
 import json
+import time
 import numpy as np
 import streamlit as st
 import plotly.graph_objects as go            # never reassign `go`
@@ -337,14 +338,14 @@ def header(eyebrow, title, desc):
     st.markdown(f'<div class="eyebrow">{eyebrow}</div><div class="h-title">{title}</div>'
                 f'<div class="h-desc">{desc}</div>', unsafe_allow_html=True)
 
-tab_assess, tab_agent, tab_ga, tab_mf = st.tabs(
-    ["Assess", "AI Agent", "GA Results", "Membership Functions"])
+tab_assess, tab_ga, tab_mf = st.tabs(
+    ["Assess", "GA Results", "Membership Functions"])
 
 
 # ---------------- ASSESS ----------------
 with tab_assess:
     header("Risk Assessment", "Evaluate Applicant",
-           "Enter the five inputs the GA-optimised fuzzy engine evaluates to produce a risk score and decision.")
+           "The AI agent observes the applicant data, checks CTOS evidence, calls the GA-optimised fuzzy engine, explains the membership degrees, and gives the final decision.")
     col_in, col_out = st.columns([1, 1], gap="large")
 
     with col_in:
@@ -358,7 +359,7 @@ with tab_assess:
             ratio  = a.number_input("Loan as % of income (0–1)", 0.0, 1.0, 0.18, step=0.01)
             emp    = b.number_input("Employment experience (yrs)", 0.0, 50.0, 4.0, step=0.5)
             default = st.selectbox("Previous loan default", ["No", "Yes"])
-            evaluate_clicked = st.button("Evaluate Risk", use_container_width=True)
+            evaluate_clicked = st.button("Evaluate Applicant", use_container_width=True)
             st.markdown('<div class="cs" style="margin:12px 0 0;">CTOS bands &nbsp; 300–449 Very Poor · '
                         '450–549 Poor · 550–649 Fair · 650–749 Good · 750–850 Excellent</div>',
                         unsafe_allow_html=True)
@@ -369,112 +370,57 @@ with tab_assess:
                         '<div class="cs">Decision, risk gauge, and the reasons drawn from the model.</div>',
                         unsafe_allow_html=True)
             if evaluate_clicked:
+                progress_box = st.empty()
+                steps = [
+                    ("Observe", "Read income, CTOS, loan ratio, default history and employment years."),
+                    ("Collect", "Map CTOS score to a credit evidence category."),
+                    ("Reason", "Check that all required variables are complete."),
+                    ("Call Engine", "Call the GA-optimised fuzzy inference engine."),
+                    ("Explain", "Translate membership degrees into human-readable reasons."),
+                    ("Act", "Return APPROVE, REVIEW or REJECT with improvement advice."),
+                ]
+                for i, (label, desc) in enumerate(steps, start=1):
+                    progress_box.progress(i / len(steps), text=f"AI Agent Process: {label} — {desc}")
+                    time.sleep(0.08)
+
+                ctos_info = lookup_ctos_category(credit)
                 r = compute_risk_detailed(income, credit, ratio, default, emp)
+
+                st.markdown('<div class="pipe" style="margin:4px 0 14px;">' +
+                            ''.join([f'<div class="pstep"><span class="pnum">{i}</span><span class="pl">{label}</span></div>'
+                                     + ('' if i == len(steps) else '<span class="psep">→</span>')
+                                     for i, (label, _) in enumerate(steps, start=1)]) +
+                            '</div>', unsafe_allow_html=True)
+
+                st.markdown(f'<div class="trace"><span class="tn">collect</span> CTOS {credit} → '
+                            f'<b>{ctos_info["category"]}</b> credit band</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="trace"><span class="tn">call tool</span> calculate_loan_risk '
+                            f'<code>income={income}, credit={credit}, ratio={ratio}, default={default}, emp={emp}</code></div>',
+                            unsafe_allow_html=True)
+
                 cls = {"APPROVE": "approve", "REVIEW": "review", "REJECT": "reject"}[r["decision"]]
                 st.markdown(f'<div class="badge {cls}"><span class="lab">{r["decision"]}</span>'
                             f'<span class="sc">Risk {r["risk_score"]} / 100</span></div>',
                             unsafe_allow_html=True)
                 st.plotly_chart(risk_gauge(r["risk_score"], r["decision"]),
                                 use_container_width=True, config=PCFG)
-                st.markdown('<div style="font-weight:700;font-size:14px;margin:2px 0 4px;">Main reasons</div>',
+                st.markdown('<div style="font-weight:700;font-size:14px;margin:2px 0 4px;">AI explanation based on fuzzy membership degrees</div>',
                             unsafe_allow_html=True)
                 cmap = {"pos": "rpos", "neg": "rneg", "neu": "rneu"}
                 html = "".join(f'<div class="reason"><span class="rdot {cmap[k]}"></span>{t}</div>'
                                for k, t in reasons_from_degrees(r["membership_degrees"]))
                 st.markdown(html, unsafe_allow_html=True)
+
+                if r["decision"] in ("REVIEW", "REJECT"):
+                    suggestion = "Try reducing the loan-to-income ratio, improving CTOS score, or increasing employment stability before reapplying."
+                else:
+                    suggestion = "Applicant profile is acceptable. Maintain credit quality and repayment discipline."
+                st.markdown(f'<div class="callout"><b>Action advice:</b> {suggestion}</div>', unsafe_allow_html=True)
             else:
                 st.markdown('<div style="text-align:center;color:#9AA8B0;padding:46px 10px;font-size:14px;">'
                             'Waiting for applicant input.<br>Click '
-                            '<b style="color:#137A54">Evaluate Risk</b> to generate a decision.</div>',
+                            '<b style="color:#137A54">Evaluate Applicant</b> to generate a decision.</div>',
                             unsafe_allow_html=True)
-
-
-# ---------------- AI AGENT ----------------
-with tab_agent:
-    header("Agentic Reasoning", "AI Agent",
-           "A reasoning agent that calls the fuzzy engine as a tool. It observes the input, gathers "
-           "missing evidence, runs the engine, tests what-if scenarios, then explains and decides.")
-
-    with st.container(border=True):
-        st.markdown('<div class="ch">How the agent works</div>'
-                    '<div class="cs">Every request follows the same six-step loop.</div>'
-                    '<div class="pipe">'
-                    '<div class="pstep"><span class="pnum">1</span><span class="pl">Observe</span></div><span class="psep">→</span>'
-                    '<div class="pstep"><span class="pnum">2</span><span class="pl">Collect</span></div><span class="psep">→</span>'
-                    '<div class="pstep"><span class="pnum">3</span><span class="pl">Reason</span></div><span class="psep">→</span>'
-                    '<div class="pstep"><span class="pnum">4</span><span class="pl">Call engine</span></div><span class="psep">→</span>'
-                    '<div class="pstep"><span class="pnum">5</span><span class="pl">Explain</span></div><span class="psep">→</span>'
-                    '<div class="pstep"><span class="pnum">6</span><span class="pl">Act</span></div>'
-                    '</div>', unsafe_allow_html=True)
-
-    client = get_client()
-    if client is None:
-        st.warning("No GEMINI_API_KEY found. Add it under Manage app → Settings → Secrets "
-                   "(deployed) or as an environment variable (local). Free key at aistudio.google.com.")
-
-    if "gem_history" not in st.session_state: st.session_state.gem_history = []
-    if "chat_log" not in st.session_state: st.session_state.chat_log = []
-    if "queued" not in st.session_state: st.session_state.queued = None
-
-    with st.container(border=True):
-        st.markdown('<div class="ch">Try an example</div>'
-                    '<div class="cs">Click to send, or type your own below.</div>', unsafe_allow_html=True)
-        ex = ["income 80k, credit 600, ratio 0.45, no default, 1 year",
-              "RM120k salary, CTOS 760, borrowing 15%, no defaults, 8 years",
-              "credit 540, defaulted before, ratio 0.5, income 40k, 2 years"]
-        ec = st.columns(len(ex))
-        for i, e in enumerate(ex):
-            if ec[i].button(e, key=f"ex{i}", use_container_width=True):
-                st.session_state.queued = e
-
-    # conversation history
-    for role, text in st.session_state.chat_log:
-        with st.chat_message(role):
-            st.markdown(text, unsafe_allow_html=True)
-
-    # input form (works reliably inside tabs, unlike chat_input)
-    with st.form("agent_form", clear_on_submit=True):
-        fc1, fc2 = st.columns([5, 1])
-        user_text = fc1.text_input("msg", placeholder="Describe an applicant…",
-                                   label_visibility="collapsed", disabled=(client is None))
-        sent = fc2.form_submit_button("Send", use_container_width=True, disabled=(client is None))
-
-    prompt = (user_text.strip() if (sent and user_text.strip()) else None) or st.session_state.queued
-    st.session_state.queued = None
-
-    if prompt and client is not None:
-        st.session_state.chat_log.append(("user", prompt))
-        with st.chat_message("user"):
-            st.markdown(prompt)
-        with st.chat_message("assistant"):
-            box = st.container(); buf = {"text": []}
-            def render(kind, payload):
-                if kind == "text":
-                    buf["text"].append(payload); box.markdown(payload)
-                elif kind == "tool":
-                    name, args = payload
-                    box.markdown(f'<div class="trace"><span class="tn">call</span> {name} '
-                                 f'<code>{json.dumps(args, ensure_ascii=False)}</code></div>',
-                                 unsafe_allow_html=True)
-                elif kind == "result":
-                    name, res = payload
-                    if name == "calculate_loan_risk":
-                        d = res["membership_degrees"]
-                        box.markdown(f'<div class="trace"><span class="tn">result</span> score '
-                                     f'<b>{res["risk_score"]}</b> → <b>{res["decision"]}</b> · '
-                                     f'ratio_high {d["ratio_high"]} · emp_junior {d["emp_junior"]} · '
-                                     f'credit_risk {d["credit_risk"]}</div>', unsafe_allow_html=True)
-                    else:
-                        box.markdown(f'<div class="trace"><span class="tn">result</span> '
-                                     f'<code>{json.dumps(res, ensure_ascii=False)}</code></div>',
-                                     unsafe_allow_html=True)
-                elif kind == "error":
-                    box.error(f"Agent error: {payload}")
-                    buf["text"].append(f"_Agent error: {payload}_")
-            with st.spinner("Agent reasoning…"):
-                st.session_state.gem_history = run_agent(
-                    client, st.session_state.gem_history, prompt, render)
-            st.session_state.chat_log.append(("assistant", "\n\n".join(buf["text"]) or "_done_"))
 
 
 # ---------------- GA RESULTS ----------------
