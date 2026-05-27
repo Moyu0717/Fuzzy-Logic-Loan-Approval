@@ -28,13 +28,13 @@ st.markdown(f"""
 .stApp {{ background:{PAGE}; }}
 html, body, [class*="css"] {{ font-family:{FONT}; color:{INK}; font-size:15px; }}
 /* centre the page */
-.main .block-container {{ padding-top:2rem; padding-bottom:3rem; max-width:1140px;
+.main .block-container {{ padding-top:.35rem; padding-bottom:2rem; max-width:1240px;
     margin-left:auto !important; margin-right:auto !important; }}
 #MainMenu, header, footer {{ visibility:hidden; }}
 [data-testid="stSidebar"] {{ display:none; }}
 
 /* brand bar */
-.brandbar {{ display:flex; align-items:center; gap:12px; margin-bottom:16px; }}
+.brandbar {{ display:flex; align-items:center; gap:12px; margin-bottom:10px; }}
 .blogo {{ width:40px; height:40px; border-radius:11px; background:{ACCENT};
          display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:18px; }}
 .brandbar .t {{ font-size:18px; font-weight:800; color:{INK}; line-height:1.1; letter-spacing:-.3px; }}
@@ -49,12 +49,12 @@ html, body, [class*="css"] {{ font-family:{FONT}; color:{INK}; font-size:15px; }
 .stTabs [aria-selected="true"] {{ background:{ACCENT} !important; }}
 .stTabs [aria-selected="true"] p {{ color:#fff !important; }}
 .stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] {{ display:none; }}
-.stTabs [data-baseweb="tab-panel"] {{ padding-top:22px; }}
+.stTabs [data-baseweb="tab-panel"] {{ padding-top:14px; }}
 
 /* page header */
 .eyebrow {{ font-size:11.5px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase; color:{ACCENT}; margin-bottom:4px; }}
-.h-title {{ font-size:28px; font-weight:800; letter-spacing:-.5px; color:{INK}; margin:0 0 6px; }}
-.h-desc {{ font-size:14.5px; color:{MUTED}; margin-bottom:18px; max-width:720px; line-height:1.55; }}
+.h-title {{ font-size:26px; font-weight:800; letter-spacing:-.5px; color:{INK}; margin:0 0 6px; }}
+.h-desc {{ font-size:14px; color:{MUTED}; margin-bottom:14px; max-width:820px; line-height:1.55; }}
 
 /* native bordered container -> card */
 [data-testid="stVerticalBlockBorderWrapper"] {{ background:{CARD}; border:1px solid {BORDER} !important;
@@ -110,6 +110,32 @@ div[data-testid="column"] .stButton > button:hover {{ border-color:{ACCENT}; col
 .callout {{ background:{ACC_SOFT}; border:1px solid #BFE3D2; border-radius:11px;
            padding:12px 15px; font-size:13.5px; color:#0E5D40; margin-bottom:16px; line-height:1.5; }}
 .kv {{ font-size:14px; line-height:1.95; }}
+
+/* compact hero + agent timeline */
+.hero {{ background:{CARD}; border:1px solid {BORDER}; border-radius:18px; padding:16px 18px; margin-bottom:14px;
+        box-shadow:0 1px 3px rgba(16,42,34,.05); }}
+.agent-card {{ background:{CARD}; border:1px solid {BORDER}; border-radius:18px; padding:18px 22px; margin:8px 0 16px;
+        box-shadow:0 1px 3px rgba(16,42,34,.05); }}
+.agent-head {{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px; }}
+.agent-title {{ font-size:17px; font-weight:800; color:{INK}; }}
+.agent-status {{ font-size:12px; color:{ACCENT}; font-weight:700; background:{ACC_SOFT}; border:1px solid #BFE3D2; padding:6px 10px; border-radius:999px; }}
+.timeline {{ position:relative; display:grid; grid-template-columns:repeat(6,1fr); gap:14px; align-items:start; }}
+.timeline:before {{ content:""; position:absolute; left:6%; right:6%; top:25px; height:3px; background:#DCEAE3; border-radius:99px; }}
+.timeline:after {{ content:""; position:absolute; left:6%; top:25px; height:3px; width:var(--fill,0%); background:{ACCENT}; border-radius:99px; transition:width .45s ease; }}
+.titem {{ position:relative; z-index:1; text-align:center; min-width:0; }}
+.tcircle {{ width:52px; height:52px; border-radius:999px; margin:0 auto 8px; display:flex; align-items:center; justify-content:center;
+          background:#F7FAF8; border:2px solid #DCEAE3; color:{MUTED}; font-weight:800; box-shadow:0 0 0 6px {CARD}; }}
+.titem.done .tcircle {{ background:{ACCENT}; border-color:{ACCENT}; color:white; }}
+.titem.active .tcircle {{ background:{ACCENT}; border-color:{ACCENT}; color:white; animation:pulse 1.1s infinite; }}
+.tlabel {{ font-size:13px; font-weight:800; color:{INK}; white-space:nowrap; }}
+.tdesc {{ font-size:11.5px; color:{MUTED}; line-height:1.25; margin-top:3px; }}
+@keyframes pulse {{ 0% {{ box-shadow:0 0 0 6px {CARD},0 0 0 8px rgba(19,122,84,.20); }} 70% {{ box-shadow:0 0 0 6px {CARD},0 0 0 17px rgba(19,122,84,0); }} 100% {{ box-shadow:0 0 0 6px {CARD},0 0 0 8px rgba(19,122,84,0); }} }}
+.info-grid {{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:10px 0 12px; }}
+.infobox {{ background:#FBFCFD; border:1px solid {BORDER}; border-radius:12px; padding:10px 12px; }}
+.infobox .ik {{ font-size:10.5px; letter-spacing:.9px; text-transform:uppercase; font-weight:800; color:{MUTED}; }}
+.infobox .iv {{ font-size:16px; font-weight:800; color:{INK}; margin-top:3px; }}
+@media (max-width: 900px) {{ .timeline {{ grid-template-columns:repeat(3,1fr); }} .timeline:before,.timeline:after{{display:none}} .info-grid{{grid-template-columns:1fr}} }}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -326,6 +352,28 @@ def mf_figure():
 PCFG = {"displayModeBar": False, "responsive": True}
 
 
+
+
+def render_agent_process(active=0, mode="idle"):
+    steps = [
+        ("Observe", "Read applicant inputs"),
+        ("Collect", "Check CTOS evidence"),
+        ("Reason", "Validate required data"),
+        ("Call Engine", "Run fuzzy risk tool"),
+        ("Explain", "Use membership degrees"),
+        ("Act", "Return decision & advice"),
+    ]
+    fill = 0 if active <= 1 else min(100, (active-1) / (len(steps)-1) * 88)
+    status = "Ready" if mode == "idle" else ("Processing" if mode == "running" else "Completed")
+    html = f'<div class="agent-card"><div class="agent-head"><div><div class="agent-title">AI Agent Process</div><div class="cs" style="margin:2px 0 0;">Agentic loop integrated into Evaluate Applicant</div></div><div class="agent-status">{status}</div></div>'
+    html += f'<div class="timeline" style="--fill:{fill}%">'
+    for i, (lab, desc) in enumerate(steps, start=1):
+        cls = "done" if (mode == "done" or i < active) else ("active" if i == active and mode == "running" else "")
+        mark = "✓" if (mode == "done" or i < active) else str(i)
+        html += f'<div class="titem {cls}"><div class="tcircle">{mark}</div><div class="tlabel">{lab}</div><div class="tdesc">{desc}</div></div>'
+    html += '</div></div>'
+    return html
+
 # ================================================================
 # LAYOUT
 # ================================================================
@@ -344,14 +392,19 @@ tab_assess, tab_ga, tab_mf = st.tabs(
 
 # ---------------- ASSESS ----------------
 with tab_assess:
-    header("Risk Assessment", "Evaluate Applicant",
-           "The AI agent observes the applicant data, checks CTOS evidence, calls the GA-optimised fuzzy engine, explains the membership degrees, and gives the final decision.")
-    col_in, col_out = st.columns([1, 1], gap="large")
+    st.markdown('<div class="hero"><div class="eyebrow">Risk Assessment</div><div class="h-title">Evaluate Applicant</div>'
+                '<div class="h-desc">The AI agent is now integrated into the main evaluation flow: it observes inputs, checks CTOS evidence, calls the GA-optimised fuzzy engine, explains the fuzzy membership degrees, and returns the final decision.</div></div>',
+                unsafe_allow_html=True)
+
+    process_slot = st.empty()
+    process_slot.markdown(render_agent_process(active=0, mode="idle"), unsafe_allow_html=True)
+
+    col_in, col_out = st.columns([0.95, 1.05], gap="large")
 
     with col_in:
         with st.container(border=True):
             st.markdown('<div class="ch">Applicant Information</div>'
-                        '<div class="cs">Five inputs the fuzzy inference system reads.</div>',
+                        '<div class="cs">Five inputs used by the fuzzy inference engine.</div>',
                         unsafe_allow_html=True)
             a, b = st.columns(2)
             income = a.number_input("Annual income (RM)", 0, 1_000_000, 65000, step=1000)
@@ -359,52 +412,51 @@ with tab_assess:
             ratio  = a.number_input("Loan as % of income (0–1)", 0.0, 1.0, 0.18, step=0.01)
             emp    = b.number_input("Employment experience (yrs)", 0.0, 50.0, 4.0, step=0.5)
             default = st.selectbox("Previous loan default", ["No", "Yes"])
-            evaluate_clicked = st.button("Evaluate Applicant", use_container_width=True)
-            st.markdown('<div class="cs" style="margin:12px 0 0;">CTOS bands &nbsp; 300–449 Very Poor · '
+            evaluate_clicked = st.button("Evaluate Applicant", use_container_width=True, type="primary")
+            st.markdown('<div class="cs" style="margin:12px 0 0;">CTOS bands: 300–449 Very Poor · '
                         '450–549 Poor · 550–649 Fair · 650–749 Good · 750–850 Excellent</div>',
                         unsafe_allow_html=True)
 
     with col_out:
         with st.container(border=True):
             st.markdown('<div class="ch">Assessment Result</div>'
-                        '<div class="cs">Decision, risk gauge, and the reasons drawn from the model.</div>',
+                        '<div class="cs">Decision, risk gauge, tool trace, and reasons drawn from the model.</div>',
                         unsafe_allow_html=True)
             if evaluate_clicked:
-                progress_box = st.empty()
-                steps = [
-                    ("Observe", "Read income, CTOS, loan ratio, default history and employment years."),
-                    ("Collect", "Map CTOS score to a credit evidence category."),
-                    ("Reason", "Check that all required variables are complete."),
-                    ("Call Engine", "Call the GA-optimised fuzzy inference engine."),
-                    ("Explain", "Translate membership degrees into human-readable reasons."),
-                    ("Act", "Return APPROVE, REVIEW or REJECT with improvement advice."),
-                ]
-                for i, (label, desc) in enumerate(steps, start=1):
-                    progress_box.progress(i / len(steps), text=f"AI Agent Process: {label} — {desc}")
-                    time.sleep(0.08)
+                step_text = ["Observe", "Collect", "Reason", "Call Engine", "Explain", "Act"]
+                for i in range(1, 7):
+                    process_slot.markdown(render_agent_process(active=i, mode="running"), unsafe_allow_html=True)
+                    time.sleep(0.16)
+                process_slot.markdown(render_agent_process(active=6, mode="done"), unsafe_allow_html=True)
 
                 ctos_info = lookup_ctos_category(credit)
                 r = compute_risk_detailed(income, credit, ratio, default, emp)
+                d = r["membership_degrees"]
 
-                st.markdown('<div class="pipe" style="margin:4px 0 14px;">' +
-                            ''.join([f'<div class="pstep"><span class="pnum">{i}</span><span class="pl">{label}</span></div>'
-                                     + ('' if i == len(steps) else '<span class="psep">→</span>')
-                                     for i, (label, _) in enumerate(steps, start=1)]) +
-                            '</div>', unsafe_allow_html=True)
+                cls = {"APPROVE": "approve", "REVIEW": "review", "REJECT": "reject"}[r["decision"]]
+                st.markdown(f'<div class="badge {cls}"><span class="lab">{r["decision"]}</span>'
+                            f'<span class="sc">Risk {r["risk_score"]} / 100</span></div>',
+                            unsafe_allow_html=True)
+
+                st.markdown(f'<div class="info-grid">'
+                            f'<div class="infobox"><div class="ik">CTOS Evidence</div><div class="iv">{credit} · {ctos_info["category"]}</div></div>'
+                            f'<div class="infobox"><div class="ik">Loan Ratio</div><div class="iv">{ratio:.2f}</div></div>'
+                            f'<div class="infobox"><div class="ik">Employment</div><div class="iv">{emp:.1f} years</div></div>'
+                            f'</div>', unsafe_allow_html=True)
+
+                st.plotly_chart(risk_gauge(r["risk_score"], r["decision"]),
+                                use_container_width=True, config=PCFG)
 
                 st.markdown(f'<div class="trace"><span class="tn">collect</span> CTOS {credit} → '
                             f'<b>{ctos_info["category"]}</b> credit band</div>', unsafe_allow_html=True)
                 st.markdown(f'<div class="trace"><span class="tn">call tool</span> calculate_loan_risk '
                             f'<code>income={income}, credit={credit}, ratio={ratio}, default={default}, emp={emp}</code></div>',
                             unsafe_allow_html=True)
-
-                cls = {"APPROVE": "approve", "REVIEW": "review", "REJECT": "reject"}[r["decision"]]
-                st.markdown(f'<div class="badge {cls}"><span class="lab">{r["decision"]}</span>'
-                            f'<span class="sc">Risk {r["risk_score"]} / 100</span></div>',
+                st.markdown(f'<div class="trace"><span class="tn">explain</span> membership degrees '
+                            f'<code>income_high={d["income_high"]}, ratio_high={d["ratio_high"]}, emp_junior={d["emp_junior"]}, credit_risk={d["credit_risk"]}</code></div>',
                             unsafe_allow_html=True)
-                st.plotly_chart(risk_gauge(r["risk_score"], r["decision"]),
-                                use_container_width=True, config=PCFG)
-                st.markdown('<div style="font-weight:700;font-size:14px;margin:2px 0 4px;">AI explanation based on fuzzy membership degrees</div>',
+
+                st.markdown('<div style="font-weight:800;font-size:14px;margin:10px 0 4px;">AI explanation</div>',
                             unsafe_allow_html=True)
                 cmap = {"pos": "rpos", "neg": "rneg", "neu": "rneu"}
                 html = "".join(f'<div class="reason"><span class="rdot {cmap[k]}"></span>{t}</div>'
@@ -412,14 +464,14 @@ with tab_assess:
                 st.markdown(html, unsafe_allow_html=True)
 
                 if r["decision"] in ("REVIEW", "REJECT"):
-                    suggestion = "Try reducing the loan-to-income ratio, improving CTOS score, or increasing employment stability before reapplying."
+                    suggestion = "Reduce the loan-to-income ratio, improve the CTOS score, or build longer employment stability before reapplying."
                 else:
                     suggestion = "Applicant profile is acceptable. Maintain credit quality and repayment discipline."
                 st.markdown(f'<div class="callout"><b>Action advice:</b> {suggestion}</div>', unsafe_allow_html=True)
             else:
-                st.markdown('<div style="text-align:center;color:#9AA8B0;padding:46px 10px;font-size:14px;">'
+                st.markdown('<div style="text-align:center;color:#8A99A3;padding:58px 10px;font-size:14px;">'
                             'Waiting for applicant input.<br>Click '
-                            '<b style="color:#137A54">Evaluate Applicant</b> to generate a decision.</div>',
+                            '<b style="color:#137A54">Evaluate Applicant</b> to run the integrated AI agent process.</div>',
                             unsafe_allow_html=True)
 
 
